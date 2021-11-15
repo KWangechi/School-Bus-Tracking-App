@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ParentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,4 +16,18 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::get('/parents', function () {
+    return view('parents.index'); 
+ });
+
+Route::get('/parents/create', function () {
+    return view('parents.create'); 
+ });
+
+Route::post('/parents/new', [ParentController::class, 'newParent']);
+
+Route::get('/new', function () {
+   return view('parents.new'); 
 });

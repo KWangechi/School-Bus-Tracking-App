@@ -14,30 +14,58 @@ use Illuminate\Support\Facades\Route;
 |
 */
 //authentication
+Route::post('/register', [App\Http\Controllers\AuthenticationController::class, 'register']);
+Route::post('/login', [App\Http\Controllers\AuthenticationController::class, 'login']);
+Route::get('/users', [App\Http\Controllers\AuthenticationController::class, 'users']);
+
+//child requests
+Route::get('/child', [App\Http\Controllers\Parent\ChildController::class, 'index']);
+Route::post('/child', [App\Http\Controllers\Parent\ChildController::class, 'store']);
+Route::get('/child/{id}', [App\Http\Controllers\Parent\ChildController::class, 'show']);
+Route::put('/child/{id}', [App\Http\Controllers\Parent\ChildController::class, 'update']);
+Route::delete('/child/{id}', [App\Http\Controllers\Parent\ChildController::class, 'destroy']);
+
+Route::group(['middleware' =>['auth:sanctum']], function () {
+
+    //Admin permissions
+    //Bus requests
+    Route::get('/buses', [App\Http\Controllers\Admin\BusController::class, 'index']);
+    Route::post('/buses', [App\Http\Controllers\Admin\BusController::class, 'store']);
+    Route::get('/buses/{id}', [App\Http\Controllers\Admin\BusController::class, 'show']);
+    Route::put('/buses/{id}', [App\Http\Controllers\Admin\BusController::class, 'update']);
+    Route::delete('/buses/{id}', [App\Http\Controllers\Admin\BusController::class, 'destroy']);
+    
+    //Driver requests
+    Route::get('/drivers', [App\Http\Controllers\Admin\DriverController::class, 'index']);
+    Route::post('/drivers', [App\Http\Controllers\Admin\DriverController::class, 'store']);
+    Route::get('/drivers/{id}', [App\Http\Controllers\Admin\DriverController::class, 'show']);
+    Route::put('/drivers/{id}', [App\Http\Controllers\Admin\DriverController::class, 'update']);
+    Route::delete('/drivers/{id}', [App\Http\Controllers\Admin\DriverController::class, 'destroy']);
+    
+    //parents requests admin
+    Route::get('/parents', [App\Http\Controllers\Admin\ParentController::class, 'index']);
+    Route::post('/parents', [App\Http\Controllers\Admin\ParentController::class, 'store']);
+    Route::get('/parents/{id}', [App\Http\Controllers\Admin\ParentController::class, 'show']);
+    Route::put('/parents/{id}', [App\Http\Controllers\Admin\ParentController::class, 'update']);
+    Route::delete('/parents/{id}', [App\Http\Controllers\Admin\ParentController::class, 'destroy']);
+
+    //one parent
+    Route::get('/parent', [App\Http\Controllers\Parent\ParentController::class, 'index']);
+    Route::post('/parent', [App\Http\Controllers\Parent\ParentController::class, 'store']);
+    Route::get('/parent/{id}', [App\Http\Controllers\Parent\ParentController::class, 'show']);
 
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+
+    
+    //roles requests
+    Route::get('/roles', [App\Http\Controllers\RoleController::class, 'index']);
+
+    Route::get('/driver', [App\Http\Controllers\Driver\DriverController::class, 'index']);
+    Route::post('/driver', [App\Http\Controllers\Driver\DriverController::class, 'store']);
+    Route::put('/driver/{id}', [App\Http\Controllers\Driver\DriverController::class, 'update']);
+    Route::delete('/driver/{id}', [App\Http\Controllers\Driver\DriverController::class, 'destroy']);
+
+
     
 });
 
-//Bus requests
-Route::get('/buses', [App\Http\Controllers\BusController::class, 'index']);
-Route::post('/buses', [App\Http\Controllers\BusController::class, 'store']);
-Route::put('/buses/{id}', [App\Http\Controllers\BusController::class, 'update']);
-Route::delete('/buses/{id}', [App\Http\Controllers\BusController::class, 'destroy']);
-
-//Driver requests
-Route::get('/drivers', [App\Http\Controllers\DriverController::class, 'index']);
-Route::post('/drivers', [App\Http\Controllers\DriverController::class, 'store']);
-Route::put('/drivers/{id}', [App\Http\Controllers\DriverController::class, 'update']);
-Route::delete('/drivers/{id}', [App\Http\Controllers\DriverController::class, 'destroy']);
-
-//parents requests
-Route::get('/parents', [App\Http\Controllers\ParentController::class, 'index']);
-Route::post('/parents', [App\Http\Controllers\ParentController::class, 'store']);
-Route::put('/parents/{id}', [App\Http\Controllers\ParentController::class, 'update']);
-Route::delete('/parents/{id}', [App\Http\Controllers\ParentController::class, 'destroy']);
-
-//roles requests
-Route::get('/roles', [App\Http\Controllers\RoleController::class, 'index']);
-Route::post('/roles', [App\Http\Controllers\RoleController::class, 'create']);

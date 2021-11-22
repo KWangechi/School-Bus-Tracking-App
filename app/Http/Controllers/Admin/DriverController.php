@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Driver;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Models\User;
 
 class DriverController extends Controller
 {
@@ -16,23 +17,33 @@ class DriverController extends Controller
      */
     public function index()
     {
-        $drivers = User::where('role_id', User::role_driver)->get();
 
-        if (empty($drivers)) {
+        if(auth()->user()->role_id == User::role_admin){
+            $drivers = Driver::all();
+            if (empty($drivers)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "No driver records found!",
+                    'status_code' => Response::HTTP_NOT_FOUND,
+                    'data' => []
+                ]);
+            } else {
+                return response()->json([
+                    'success' => true,
+                    'message' => "Driver records found",
+                    'status_code' => Response::HTTP_OK,
+                    'data' => $drivers
+                ]);
+            }
+        }
+        else{
             return response()->json([
                 'success' => false,
-                'message' => "No driver records found!",
-                'status_code' => Response::HTTP_NOT_FOUND,
-                'data' => []
-            ]);
-        } else {
-            return response()->json([
-                'success' => true,
-                'message' => "Driver records found",
-                'status_code' => Response::HTTP_OK,
-                'data' => $drivers
+                'message' => "You are not authorised to see this page!!",
+                'status_code' => Response::HTTP_FORBIDDEN,
             ]);
         }
+        
     }
 
     /**
@@ -53,16 +64,11 @@ class DriverController extends Controller
      */
     public function store(Request $request)
     {
-        $driver = User::create([
-            'role_id' => User::role_driver,
-            'bus_id' => $request->bus_id,
-            'name' => $request->name,
-            'phone_number' => $request->phone_number,
+        $driver = Driver::create([
+            'user_id' => auth()->user()->id,
             'age' => $request->age,
             'date_registered' => date($request->date_registered)
         ]);
-
-        
 
         if (!$driver) {
             return response()->json([
@@ -89,8 +95,9 @@ class DriverController extends Controller
      */
     public function show($id)
     {
-        $driver = User::find($id);
-
+        //$driver = Driver::with('user')->find($id);
+        $driver = Driver::find($id);
+        
         if (!$driver) {
             return response()->json([
                 'success' => false,
@@ -128,7 +135,7 @@ class DriverController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $driver = User::find($id);
+        $driver = Driver::find($id);
 
         if (!$driver) {
             return response()->json([
@@ -164,7 +171,7 @@ class DriverController extends Controller
      */
     public function destroy($id)
     {
-        $driver = User::find($id);
+        $driver = Driver::find($id);
 
         if (!$driver) {
             return response()->json([

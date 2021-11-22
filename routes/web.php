@@ -14,20 +14,25 @@ use App\Http\Controllers\ParentController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('{any}', function(){
+    return view('app');
+})->where('any', '*');
 
-Route::get('/parents', function () {
-    return view('parents.index'); 
- });
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
-Route::get('/parents/create', function () {
-    return view('parents.create'); 
- });
+// Route::get('/parents', function () {
+//     return view('parents.index'); 
+//  });
 
-Route::post('/parents/new', [ParentController::class, 'newParent']);
+// Route::get('/parents/create', function () {
+//     return view('parents.create'); 
+//  });
 
-Route::get('/new', function () {
-   return view('parents.new'); 
-});
+// Route::post('/parents/new', [ParentController::class, 'newParent']);
+
+// Route::get('/new', function () {
+//    return view('parents.new'); 
+// });
+

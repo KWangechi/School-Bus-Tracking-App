@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bus;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class ParentController extends Controller
+class BusController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,31 +15,26 @@ class ParentController extends Controller
      */
     public function index()
     {
-        $parents = Parent::all();
+        $buses = Bus::all();
 
-        if (empty($parents)) {
+        if(!$buses){
             return response()->json([
                 'success' => false,
-                'message' => 'Parent records not found!',
+                'message' => "No bus records found!",
                 'status_code' => Response::HTTP_NOT_FOUND,
                 'data' => []
-
-
-            ]);
-        } else {
-            return response()->json([
-                'success' => true,
-                'message' => 'Parent records found!',
-                'status_code' => Response::HTTP_OK,
-                'data' => $parents,
             ]);
         }
-    }
+        else{
+            return Response()->json([
+                'success' => true,
+                'message' => "Bus records found",
+                'status_code' => Response::HTTP_OK,
+                'data' => $buses
+            ]);
+        }
 
-    public function view(){
-        $parents = Parent::all();
 
-        return view('parents.index', compact('parents'));
     }
 
     /**
@@ -46,25 +42,11 @@ class ParentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
+    public function create()
     {
-        
+        //
     }
 
-    public function newParent(Request $request){
-        $parent = Parent::create([
-            'firstname' => $request->firstname,
-            'lastname' => $request->lastname,
-            'phone_number' => $request->phone_number,
-            // 'role_id' => $request->role_id,
-            // 'chid_id' => $request->child_id,
-            'home_address' => $request->home_address,
-            'number_of_children' => $request->number_of_children
-        ]);
-
-        $parent->save();
-        return view('parents.index')->with('status', "Parent successfully created!!");
-    }
     /**
      * Store a newly created resource in storage.
      *
@@ -73,29 +55,26 @@ class ParentController extends Controller
      */
     public function store(Request $request)
     {
-        $parent = Parent::create([
-            'firstname' => $request->firstname,
-            'lastname' => $request->lastname,
-            'phone_number' => $request->phone_number,
-            // 'role_id' => $request->role_id,
-            // 'chid_id' => $request->child_id,
-            'home_address' => $request->home_address,
-            'number_of_children' => $request->number_of_children
+        $bus = Bus::create([
+            'driver_id' => $request->driver_id,
+            'number_plate' => $request->number_plate,
+            'date_registered' => date($request->date_registered),
+            'designated_route' => $request->designated_route,
         ]);
 
-        if (!$parent) {
+        if(!$bus){
             return response()->json([
-                'success' => true,
-                'message' => 'Parent details created succcessfully!!!',
-                'status_code' => Response::HTTP_CREATED,
-                'data' => $parent,
+                'success' => false,
+                'message' => "An error occurred. Please try again!!!",
+                'status_code' => Response::HTTP_OK,
             ]);
-        } else {
+        }
+        else{
             return response()->json([
                 'success' => true,
-                'message' => 'An error occurred while processing. Please try again!',
-                'status_code' => Response::HTTP_REQUEST_TIMEOUT,
-                'data' => $parent,
+                'message' => "Bus created successfully!!",
+                'status_code' => Response::HTTP_OK,
+                'data' => $bus
             ]);
         }
     }
@@ -108,21 +87,22 @@ class ParentController extends Controller
      */
     public function show($id)
     {
-        $parent = Parent::find($id);
-
-        if (!$parent) {
+        $bus = Bus::with('driver')->find($id);
+        
+        if(!$bus){
             return response()->json([
                 'success' => false,
-                'message' => 'Parent record does not exist!',
+                'message' => "Bus details not found!!",
                 'status_code' => Response::HTTP_NOT_FOUND,
-                'data' => [],
+                'data' => $bus
             ]);
-        } else {
+        }
+        else{
             return response()->json([
                 'success' => true,
-                'message' => 'Parent record found!!!',
-                'status_code' => Response::HTTP_FOUND,
-                'data' => $parent,
+                'message' => "Bus details found",
+                'status_code' => Response::HTTP_OK,
+                'data' => $bus
             ]);
         }
     }
@@ -135,7 +115,7 @@ class ParentController extends Controller
      */
     public function edit($id)
     {
-        
+        //
     }
 
     /**
@@ -147,32 +127,37 @@ class ParentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $parent = Parent::find($id);
+        $bus = Bus::find($id);
 
-        if (!$parent) {
+        if(!$bus) {
             return response()->json([
-                'success' => true,
-                'message' => "Driver details not found",
-                'status_code' => Response::HTTP_OK,
-                'data' => $parent
+                'success' => false,
+                'message' => "Bus details not found",
+                'status_code' => Response::HTTP_NOT_FOUND,
+                'data' => []
             ]);
-        } else {
-            if ($parent->update($request->all())) {
+        }
+        else{
+            if($bus->update($request->all())){
                 return response()->json([
                     'success' => true,
-                    'message' => "Parents details updated successfully!!",
+                    'message' => "Bus details updated successfully!!",
                     'status_code' => Response::HTTP_OK,
-                    'data' => $parent,
+                    'data' => $bus,
                 ]);
-            } else {
+                
+            }
+            else{
                 return response()->json([
                     'success' => false,
                     'message' => "Update not successful. Please try again!!",
                     'status_code' => Response::HTTP_OK,
                     'data' => [],
                 ]);
-            }
+            } 
         }
+
+
     }
 
     /**
@@ -183,30 +168,35 @@ class ParentController extends Controller
      */
     public function destroy($id)
     {
-        $parent = Parent::find($id);
+        $bus = Bus::find($id);
 
-        if (!$parent) {
+        if(!$bus) {
             return response()->json([
                 'success' => true,
-                'message' => "Parent details not found",
+                'message' => "Bus details not found",
                 'status_code' => Response::HTTP_NOT_FOUND,
                 'data' => []
             ]);
-        } else {
-            if ($parent->delete()) {
+        }
+        else{
+            if($bus->delete()){
                 return response()->json([
                     'success' => true,
-                    'message' => "Parent details deleted successfully!!",
+                    'message' => "Bus details deleted successfully!!",
                     'status_code' => Response::HTTP_OK,
                     
                 ]);
-            } else {
+                
+            }
+            else{
                 return response()->json([
                     'success' => false,
                     'message' => "Deletion not successful. Please try again!!",
                     'status_code' => Response::HTTP_OK,
                 ]);
             }
+
+            
         }
     }
 }

@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Bus extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
-    protected $fillable = ['number_plate' , 'date_registered', 'designated_route'];
+    protected $fillable = ['driver_id', 'number_plate' , 'date_registered', 'designated_route'];
 
     protected $casts = [
         'date_registered' => 'datetime:Y-m-d H:i:s'

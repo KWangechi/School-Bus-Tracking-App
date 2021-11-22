@@ -8,13 +8,18 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Driver extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
-    protected $fillable = ['bus_id', 'firstname', 'lastname','phone_number','age', 'date_registered'];
+    protected $fillable = ['user_id', 'name','age', 'date_registered'];
     protected $table = 'drivers';
     protected $casts = ['date_registered' => 'datetime:Y-m-d'];
 
     public function bus(){
-        return $this->hasOne(Bus::class);
+        return $this->hasMany(Bus::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

@@ -4,14 +4,14 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable,SoftDeletes;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -20,18 +20,14 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'phone_number',
         'email',
         'password',
         'role_id',
-        'bus_id',
-        'age',
-        'phone_number',
-        'date_registered',
-        'address',
-        
 
     ];
 
+    // protected $guard = ['email'];
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -52,17 +48,28 @@ class User extends Authenticatable
         'date_registered' => 'date'
     ];
 
-    CONST role_admin = 1;
-    CONST role_driver = 2;
-    CONST role_parent = 3;
+    const role_admin = 1;
+    const role_driver = 2;
+    const role_parent = 3;
 
-    //admin being able to view these fields
-    public function driverFields(User $user){
-        $user->pluck('');
+
+    public function drivers()
+    {
+        return $this->hasOne(Driver::class);
     }
+
+    public function parents()
+    {
+        return $this->hasOne(Guardian::class);
+    }
+
+    // public function userRoles()
+    // {
+    //     return $this->hasOne(UserRole::class, 'user_id');
+    // }
     
-
-    public function parentFields(){
-
+    public function role()
+    {
+        return $this->hasOne(Role::class);
     }
 }

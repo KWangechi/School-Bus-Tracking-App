@@ -53,12 +53,12 @@ class User extends Authenticatable
     const role_parent = 3;
 
 
-    public function drivers()
+    public function driver()
     {
         return $this->hasOne(Driver::class);
     }
 
-    public function parents()
+    public function parent()
     {
         return $this->hasOne(Guardian::class);
     }

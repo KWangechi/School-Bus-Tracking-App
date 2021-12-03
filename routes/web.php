@@ -14,9 +14,22 @@ use App\Http\Controllers\ParentController;
 |
 */
 
+// Route::get('/', function(){
+// return view('index');
+// });
+
+// Route::get('/register', function(){
+// return view('register');
+// });
+
+// Route::get('/login', function(){
+// return view('index');
+// });
+
 Route::get('{any}', function(){
-    return view('app');
-})->where('any', '*');
+    return view('index');
+})->where('any', '.*');
+
 
 // Route::get('/', function () {
 //     return view('welcome');

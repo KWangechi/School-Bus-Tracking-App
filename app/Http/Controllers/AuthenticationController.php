@@ -80,11 +80,21 @@ class AuthenticationController extends Controller
 
     public function logout(Request $request)
     {
-        $request->user()->tokens()->delete();
-        return response()->json([
-            'success' => true,
-            'message' => "Sign out successful!!",
-            'status_code' => Response::HTTP_OK
-        ]);
-    }
+        if($request->user()->tokens()->delete()){
+            return response()->json([
+                'success' => true,
+                'message' => "Sign out successful!!",
+                'status_code' => Response::HTTP_OK
+            ]);
+        }
+        else{
+            return response()->json([
+                'success' => false,
+                'message' => "An error occurred. Unable to logout!!",
+                'status_code' => Response::HTTP_METHOD_NOT_ALLOWED
+            ]);
+        }
+        }
+
+        
 }

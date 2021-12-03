@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Driver;
 
 use App\Models\Driver;
+use App\Models\Guardian;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Notifications\TripStarted;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -18,7 +21,9 @@ class DriverController extends Controller
      */
     public function index()
     {
-        $driver = Driver::where('user_id', auth()->user()->id)->get();
+        $driver = Driver::where('user_id', auth()->user()->id)->first();
+
+        // dd($driver);
 
         if (auth()->user()->role_id == User::role_driver) {
             return response()->json([
@@ -205,4 +210,62 @@ class DriverController extends Controller
             }
         }
     }
+
+public function startTrip(){
+    $users = User::all();
+
+        $driver = Driver::where('user_id', auth()->user()->id)->first();
+    $newTrip = [
+        'name' => 'Departure from school!!',
+        'body' => 'This is to notify you that the trip has started',
+        'thanks' => 'Thank you',
+        'tripText' => 'Check out the map to track your child!',
+        'tripUrl' => 'http://localhost:8000/map',
+
+    ];
+
+    dd(Notification::send($users, new TripStarted($newTrip)));
+    
+}
+
+public function showNotifications(){
+    $driver = Driver::where('user_id', auth()->user()->id)->first();
+
+    $notifications = $driver->user->unreadNotifications;
+
+    if(!$notifications){
+        return response()->json([
+            'success' => false,
+            'message' => "You currently don't have notifications",
+            'status_code' => Response::HTTP_NOT_FOUND
+        ]);
+    }
+    else{
+        return response()->json([
+            'success' => true,
+            'message' => "Notifications found!!!",
+            'status_code' => Response::HTTP_OK,
+            'data' => $notifications
+        ]);
+        
+    }
+    
+}
+
+public function markNotification(Request $request){
+    $driver = Driver::where('user_id', auth()->user()->id)->first();
+
+    $driver->user->unreadNotifications->when($request->input('id'), function ($query) use ($request){
+        return $query->where('id', $request->input('id'));
+    })->markAsRead();
+
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Notification has been marked as read',
+        'status_code' => Response::HTTP_OK,
+
+    ]);
+    
+}
 }

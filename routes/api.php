@@ -14,9 +14,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 //authentication
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
+
 Route::post('/register', [App\Http\Controllers\AuthenticationController::class, 'register']);
 Route::post('/login', [App\Http\Controllers\AuthenticationController::class, 'login']);
 Route::get('/users', [App\Http\Controllers\AuthenticationController::class, 'users']);
+
 
 //child requests
 Route::get('/child', [App\Http\Controllers\Parent\ChildController::class, 'index']);
@@ -54,7 +59,13 @@ Route::group(['middleware' =>['auth:sanctum']], function () {
     Route::post('/parent', [App\Http\Controllers\Parent\ParentController::class, 'store']);
     Route::get('/parent/{id}', [App\Http\Controllers\Parent\ParentController::class, 'show']);
 
-
+    
+    //one driver
+    Route::get('/driver', [App\Http\Controllers\Driver\DriverController::class, 'index']);
+    Route::post('/driver', [App\Http\Controllers\Driver\DriverController::class, 'store']);
+    Route::get('/driver/{id}', [App\Http\Controllers\Driver\DriverController::class, 'show']);
+    Route::put('/driver/{id}', [App\Http\Controllers\Driver\DriverController::class, 'update']);
+    Route::delete('/driver/{id}', [App\Http\Controllers\Driver\DriverController::class, 'destroy']);
 
     
     //roles requests
@@ -65,7 +76,12 @@ Route::group(['middleware' =>['auth:sanctum']], function () {
     Route::put('/driver/{id}', [App\Http\Controllers\Driver\DriverController::class, 'update']);
     Route::delete('/driver/{id}', [App\Http\Controllers\Driver\DriverController::class, 'destroy']);
 
+    Route::post('/logout', [App\Http\Controllers\AuthenticationController::class, 'logout']);
 
-    
+    //send a notification
+    Route::post('/send-notification', [App\Http\Controllers\Driver\DriverController::class, 'startTrip']);
+    Route::get('/notifications', [App\Http\Controllers\Driver\DriverController::class, 'showNotifications']);
+    Route::post('/markNotification', [App\Http\Controllers\Driver\DriverController::class, 'markNotification']);
+
 });
 

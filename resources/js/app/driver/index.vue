@@ -1,5 +1,5 @@
 <template>
-<div>
+    <div>
         <nav class="navbar navbar-light bg-light p-3">
             <div
                 class="
@@ -48,18 +48,17 @@
                         data-toggle="dropdown"
                         aria-expanded="false"
                     >
-                        Hello, {{user.name}}
+                        Hello, {{ user.name }}
                     </button>
                     <ul
                         class="dropdown-menu"
                         aria-labelledby="dropdownMenuButton"
                     >
                         <li>
-                            
-                                <a class="dropdown-item" @click="logout">Sign out</a>
-                                
-                                </li>
-                                
+                            <a class="dropdown-item" @click="logout"
+                                >Sign out</a
+                            >
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -81,166 +80,127 @@
                     <div class="position-sticky pt-md-5">
                         <ul class="nav flex-column">
                             <li class="nav-item">
-                                <router-link to="/map" class="nav-link active">
+                                <router-link to="/driver/map" class="nav-link">
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         width="24"
                                         height="24"
+                                        fill="currentColor"
+                                        class="bi bi-map"
                                         viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        class="feather feather-home"
                                     >
                                         <path
-                                            d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
-                                        ></path>
-                                        <polyline
-                                            points="9 22 9 12 15 12 15 22"
-                                        ></polyline>
+                                            fill-rule="evenodd"
+                                            d="M15.817.113A.5.5 0 0 1 16 .5v14a.5.5 0 0 1-.402.49l-5 1a.502.502 0 0 1-.196 0L5.5 15.01l-4.902.98A.5.5 0 0 1 0 15.5v-14a.5.5 0 0 1 .402-.49l5-1a.5.5 0 0 1 .196 0L10.5.99l4.902-.98a.5.5 0 0 1 .415.103zM10 1.91l-4-.8v12.98l4 .8V1.91zm1 12.98 4-.8V1.11l-4 .8v12.98zm-6-.8V1.11l-4 .8v12.98l4-.8z"
+                                        />
                                     </svg>
                                     Map/Location
-                                
                                 </router-link>
                             </li>
                             <li class="nav-item">
-                                <router-link to="/notifications" class="nav-link">
+                                <router-link
+                                    to="/driver/notifications"
+                                    class="nav-link"
+                                >
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         width="24"
                                         height="24"
-                                        viewBox="0 0 24 24"
                                         fill="none"
+                                        class="bi bi-envelope"
+                                        viewBox="0 0 24 24"
                                         stroke="currentColor"
                                         stroke-width="2"
                                         stroke-linecap="round"
                                         stroke-linejoin="round"
-                                        class="feather feather-file"
                                     >
                                         <path
-                                            d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"
-                                        ></path>
-                                        <polyline
-                                            points="13 2 13 9 20 9"
-                                        ></polyline>
+                                            d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"
+                                        />
                                     </svg>
-                                    
-                                    Notifications
 
-                                    <span v-if="notifications.length==0">
+                                    Inbox
 
-                                    </span>
+                                    <span v-if="inbox.length == 0"> </span>
 
                                     <span v-else>
-                                    {{notifications.length}}
+                                        {{ inbox.length }}
                                     </span>
-
                                 </router-link>
                             </li>
                             <li class="nav-item">
-                                <router-link to="/profile" class="nav-link">
+                                <router-link
+                                    to="/driver/profile"
+                                    class="nav-link"
+                                >
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         width="24"
                                         height="24"
+                                        fill="currentColor"
+                                        class="bi bi-person-circle"
                                         viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        class="feather feather-shopping-cart"
                                     >
-                                        <circle cx="9" cy="21" r="1"></circle>
-                                        <circle cx="20" cy="21" r="1"></circle>
                                         <path
-                                            d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"
-                                        ></path>
+                                            d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"
+                                        />
+                                        <path
+                                            fill-rule="evenodd"
+                                            d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"
+                                        />
                                     </svg>
-                                     My profile
+                                    My profile
                                 </router-link>
                             </li>
                         </ul>
                     </div>
                 </nav>
-                <!-- <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4 py-4">
-                    <h1 class="h2">Dashboard</h1>
-                    <p class="text-center">
-                        This is the homepage of a simple admin interface which
-                        is part of a tutorial written on Themesberg
-                    </p>
-                </main> -->
+                <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4 py-4">
+                    <router-view />
+                </main>
             </div>
         </div>
     </div>
-
-
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
     data() {
         return {
-            user: {},
-            token: localStorage.getItem("token"),
-            isLoggedIn: false,
             errorMessage: null,
-            notifications:{}
         };
     },
     mounted() {
-        this.getToken();
-        this.getNotifications();
+        if (!this.setUser()) {
+            window.location.href = "/";
+        }
+        this.getUser();
+        this.getInbox();
+    },
+    computed: {
+        ...mapGetters({
+            user: "user",
+            driver: "driver",
+            inbox: "inbox",
+        }),
     },
     methods: {
         async logout(e) {
             e.preventDefault();
-            await axios
-                .post("/api/logout")
-                .then((response) => {
-                    localStorage.removeItem("token");
-                    if (response.data.success) {
-                        window.location.href = "/login";
-                        console.log(response.data);
-                    } else {
-                        console.log(response);
-                    }
-                })
-                .catch(function (error) {
-                    console.error(error);
-                });
+            this.$store.commit("LOGOUT_USER");
         },
-        async getToken() {
-            axios.defaults.headers.common[
-                "Authorization"
-            ] = `Bearer ${this.token}`;
-            await axios
-                .get("/api/user")
-                .then((response) => {
-                    this.user = response.data;
-                    this.isLoggedIn = true;
-                })
-                .catch((errors) => {
-                    console.log(errors);
-                });
+        async getUser() {
+            this.$store.commit("GET_USER");
         },
-        async getNotifications() {
-            await axios
-                .get("/api/notifications")
-                .then((response) => {
-                    localStorage.getItem("token");
-                    this.notifications = response.data.data;
-                    console.log(response.data.data);
-
-                })
-                .catch((errors) => {
-                    console.log(errors);
-                });
+        async setUser() {
+            this.$store.commit("SET_USER");
         },
-}
-}
+        async getInbox() {
+            this.$store.commit("GET_INBOX");
+        },
+    },
+};
 </script>
 
 <style>

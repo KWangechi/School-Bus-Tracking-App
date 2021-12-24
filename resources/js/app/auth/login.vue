@@ -91,49 +91,25 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
-    name:'Login',
     data() {
         return {
-            user:{
-            email: "",
-            password: ""
-            },
-            
-            errorMessage: null,
+            user: {},
         };
+    },
+    computed:{
+        ...mapGetters({
+            errorMessage: "errorMessage"
+        })
     },
     methods: {
         handleSubmit(e) {
             e.preventDefault();
-            if (this.user.password.length > 0 && this.user.email != null) {
-                axios
-                    .post("/api/login", this.user)
-                    .then((response) => {
-                        localStorage.setItem(
-                            "token",
-                            response.data.access_token
-                        );
-                        if (response.data.success && response.data.data.role_id == 1) {
-                            window.location.href = "/dashboard";
-                        } 
-                        else if(response.data.success && response.data.data.role_id == 2){
-                            window.location.href = "/driver"
-                            }
-                            else if(response.data.success && response.data.data.role_id == 3){
-                                window.location.href = "/parent"
-                            }
-                            else {
-                            this.errorMessage = response.data.message;
-                        }
-                    })
-                    .catch(function (error) {
-                        console.error(error);
-                    });
-            }
+
+            this.$store.commit("LOGIN_USER", this.user);
         },
-        
     },
-    
+
 };
 </script>

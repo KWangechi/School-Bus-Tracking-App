@@ -71,17 +71,33 @@ Route::group(['middleware' =>['auth:sanctum']], function () {
     //roles requests
     Route::get('/roles', [App\Http\Controllers\RoleController::class, 'index']);
 
-    Route::get('/driver', [App\Http\Controllers\Driver\DriverController::class, 'index']);
-    Route::post('/driver', [App\Http\Controllers\Driver\DriverController::class, 'store']);
-    Route::put('/driver/{id}', [App\Http\Controllers\Driver\DriverController::class, 'update']);
-    Route::delete('/driver/{id}', [App\Http\Controllers\Driver\DriverController::class, 'destroy']);
-
     Route::post('/logout', [App\Http\Controllers\AuthenticationController::class, 'logout']);
 
-    //send a notification
-    Route::post('/send-notification', [App\Http\Controllers\Driver\DriverController::class, 'startTrip']);
-    Route::get('/notifications', [App\Http\Controllers\Driver\DriverController::class, 'showNotifications']);
-    Route::post('/markNotification', [App\Http\Controllers\Driver\DriverController::class, 'markNotification']);
+    //send a notification(driver module)
+    Route::prefix('driver')->group(function (){
+        Route::post('/send-notification', [App\Http\Controllers\Driver\DriverController::class, 'startTrip']);
+        Route::get('/notifications/all', [App\Http\Controllers\Driver\DriverController::class, 'showAllNotifications']);
+        Route::get('/notifications/inbox', [App\Http\Controllers\Driver\DriverController::class, 'showUnreadNotifications']);
+        Route::post('/markNotification', [App\Http\Controllers\Driver\DriverController::class, 'markNotification']);
+        // Route::post('/delete-notification', [App\Http\Controllers\Driver\DriverController::class, 'deleteNotification']);
+        Route::delete('/deleteNotification/{id}', [App\Http\Controllers\Driver\DriverController::class, 'deleteNotification']);
+        Route::post('/deleteAllNotifications', [App\Http\Controllers\Driver\DriverController::class, 'deleteAllNotification']);
+        Route::post('/deleteInbox', [App\Http\Controllers\Driver\DriverController::class, 'deleteInbox']);
+
+    });
+
+    Route::prefix('parent')->group(function (){
+        Route::post('/send-notification', [App\Http\Controllers\Driver\DriverController::class, 'startTrip']);
+        Route::get('/notifications', [App\Http\Controllers\Driver\DriverController::class, 'showAllNotifications']);
+        Route::get('/unreadNotifications', [App\Http\Controllers\Driver\DriverController::class, 'showUnreadNotifications']);
+        Route::post('/markNotification', [App\Http\Controllers\Driver\DriverController::class, 'markNotification']);
+        Route::post('/delete-notification', [App\Http\Controllers\Driver\DriverController::class, 'deleteNotification']);
+    });
+
+
+    //notifications(parent module)
+    // Route::get('/notifications', [App\Http\Controllers\Parent\ParentController::class, 'showNotifications']);
+    // Route::post('/markNotification', [App\Http\Controllers\Parent\ParentController::class, 'markNotification']);
 
 });
 

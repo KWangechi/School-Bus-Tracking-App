@@ -1,8 +1,6 @@
 <template>
     <div>
-        <driver />
         <div id="map"></div>
-
         <div class="text-center">
             <br />
             <button type="button" class="btn btn-primary" @click="startTrip">Start trip</button>
@@ -11,11 +9,7 @@
 </template>
 
 <script>
-import Driver from "./index";
 export default {
-    components: {
-        Driver,
-    },
     data() {
         return {
             latLng: "",
@@ -85,15 +79,7 @@ export default {
         },
 
         async startTrip(){
-             await axios
-                .post("/api/send-notification")
-                .then((response) => {
-                    localStorage.getItem("token");
-                    console.log("Notification successfully sent!!!" + response)
-                })
-                .catch((errors) => {
-                    console.log(errors);
-                });  
+             this.$store.commit('SEND_NOTIFICATION') 
         }
     },
     mounted() {

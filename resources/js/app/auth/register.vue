@@ -40,7 +40,6 @@
                                 <input
                                     id="role_id"
                                     type="number"
-                                    value="3"
                                     v-model="user.role_id"
                                     hidden
                                     class="form-control"

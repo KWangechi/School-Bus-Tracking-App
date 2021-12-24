@@ -1,7 +1,4 @@
-import VueRouter from 'vue-router';
-import Vue from 'vue'
-
-Vue.use(VueRouter);
+import { createRouter, createWebHistory } from 'vue-router'
 
 import Register from '../app/auth/register';
 import Login from '../app/auth/login';
@@ -18,12 +15,16 @@ import Bus from '../app/admin/bus'
 import Driver from '../app/driver/index'
 import MapComponent from '../app/driver/map'
 import Profile from '../app/driver/profile'
-import Notification from '../app/driver/notifications'
+import Notification from '../app/driver/notifications/index'
+import Unread from '../app/driver/notifications/unread'
+import Read from '../app/driver/notifications/read'
 
 
-const router = new VueRouter({
+const router = createRouter({
 
-    mode: 'history',
+   history: createWebHistory(),
+    linkActiveClass: "active",
+    linkExactActiveClass: "exact-active",
 
     routes : [
         {
@@ -50,9 +51,34 @@ const router = new VueRouter({
 
         // driver pages
         {
-            name: 'driver',
             path: '/driver',
-            component: Driver
+            component: Driver,
+            children:[
+                {
+                    path: 'map',
+                    component: MapComponent
+                },
+                {
+                    path: 'profile',
+                    component: Profile
+                },
+        
+                {
+                    path: 'notifications',
+                    component: Notification,
+                    children: [
+                        {
+                            path: 'all',
+                            component: Read
+                        },
+
+                        {
+                            path: 'inbox',
+                            component: Unread
+                        },
+                    ]
+                },
+            ]
         },
 
         //admin pages
@@ -72,25 +98,10 @@ const router = new VueRouter({
             path: '/drivers',
             component: DriversIndex
         },
-        {
-            name: 'map',
-            path: '/map',
-            component: MapComponent
-        },
-        {
-            name: 'profile',
-            path: '/profile',
-            component: Profile
-        },
-
-        {
-            name: 'notifications',
-            path: '/notifications',
-            component: Notification
-        },
+        
+        
 
     ]
 });
-
 
 export default router;

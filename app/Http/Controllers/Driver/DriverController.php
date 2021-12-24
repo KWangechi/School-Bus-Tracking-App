@@ -173,7 +173,6 @@ class DriverController extends Controller
                     ]);
             }
         }
-
     }
 
     /**
@@ -211,11 +210,12 @@ class DriverController extends Controller
         }
     }
 
-public function startTrip(){
-    $users = User::all();
+    public function startTrip()
+    {
+        $users = User::all();
 
         $driver = Driver::where('user_id', auth()->user()->id)->first();
-    $newTrip = [
+        $newTrip = [
         'name' => 'Departure from school!!',
         'body' => 'This is to notify you that the trip has started',
         'thanks' => 'Thank you',
@@ -224,48 +224,142 @@ public function startTrip(){
 
     ];
 
-    dd(Notification::send($users, new TripStarted($newTrip)));
-    
-}
+        dd(Notification::send($users, new TripStarted($newTrip)));
+    }
 
-public function showNotifications(){
-    $driver = Driver::where('user_id', auth()->user()->id)->first();
+    public function showAllNotifications()
+    {
+        $driver = Driver::where('user_id', auth()->user()->id)->first();
 
-    $notifications = $driver->user->unreadNotifications;
+        $notifications = $driver->user->readNotifications;
 
-    if(!$notifications){
-        return response()->json([
+        if (!$notifications) {
+            return response()->json([
             'success' => false,
             'message' => "You currently don't have notifications",
             'status_code' => Response::HTTP_NOT_FOUND
         ]);
-    }
-    else{
-        return response()->json([
+        } else {
+            return response()->json([
             'success' => true,
             'message' => "Notifications found!!!",
             'status_code' => Response::HTTP_OK,
             'data' => $notifications
         ]);
-        
+        }
     }
-    
-}
 
-public function markNotification(Request $request){
-    $driver = Driver::where('user_id', auth()->user()->id)->first();
+    public function markNotification(Request $request)
+    {
+        $driver = Driver::where('user_id', auth()->user()->id)->first();
 
-    $driver->user->unreadNotifications->when($request->input('id'), function ($query) use ($request){
-        return $query->where('id', $request->input('id'));
-    })->markAsRead();
+        $driver->user->unreadNotifications->when($request->input('id'), function ($query) use ($request) {
+            return $query->where('id', $request->input('id'));
+        })->markAsRead();
 
 
-    return response()->json([
+        return response()->json([
         'success' => true,
         'message' => 'Notification has been marked as read',
         'status_code' => Response::HTTP_OK,
 
     ]);
-    
-}
+    }
+
+    public function showUnreadNotifications()
+    {
+        $driver = Driver::where('user_id', auth()->user()->id)->first();
+
+        $notifications = $driver->user->unreadNotifications;
+
+        if (!$notifications) {
+            return response()->json([
+            'success' => false,
+            'message' => "You currently don't have notifications",
+            'status_code' => Response::HTTP_NOT_FOUND
+        ]);
+        } else {
+            return response()->json([
+            'success' => true,
+            'message' => "Notifications found!!!",
+            'status_code' => Response::HTTP_OK,
+            'data' => $notifications
+        ]);
+        }
+    }
+
+    public function deleteAllNotification()
+    {
+        $driver = Driver::where('user_id', auth()->user()->id)->first();
+
+        $notifications = $driver->user->readNotifications;
+
+        // dd($notifications);
+        if ($notifications->each->delete()) {
+            return response()->json([
+        'success' => true,
+        'message' => 'Notification deleted successfully!!!',
+        'status_code' => Response::HTTP_OK,
+
+    ]);
+        } else {
+            return response()->json([
+        'success' => false,
+        'message' => 'Something went wrong. Please try again!',
+        'status_code' => Response::HTTP_INTERNAL_SERVER_ERROR
+
+    ]);
+        }
+    }
+
+    public function deleteNotification($id)
+    {
+        $driver = Driver::where('user_id', auth()->user()->id)->first();
+
+        $notification = $driver->user->readNotifications->find($id);
+
+        // dd($notification);
+        if ($notification->delete()) {
+                    return response()->json([
+                'success' => true,
+                'message' => 'Notification deleted successfully!!!',
+                'status_code' => Response::HTTP_OK,
+        
+            ]);
+                } else {
+                    return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong. Please try again!',
+                'status_code' => Response::HTTP_INTERNAL_SERVER_ERROR
+        
+            ]);
+                }
+    }
+
+    public function deleteInbox()
+    {
+        $driver = Driver::where('user_id', auth()->user()->id)->first();
+
+        $inbox = $driver->user->unreadNotifications;
+
+        // dd($inbox);
+        if ($inbox->each->delete()) {
+            return response()->json([
+        'success' => true,
+        'message' => 'Notification deleted successfully!!!',
+        'status_code' => Response::HTTP_OK,
+
+    ]);
+        } else {
+            return response()->json([
+        'success' => false,
+        'message' => 'Something went wrong. Please try again!',
+        'status_code' => Response::HTTP_INTERNAL_SERVER_ERROR
+
+    ]);
+        }
+    }
+
+
+
 }

@@ -6,10 +6,12 @@
 
 // import axios from "axios";
 import router from "./router";
-import store from "./store/auth/index";
-import Vue from "vue";
-// import './index.css'
+import store from "./store";
+import Home from './app/auth/index';
+import ElementPlus from 'element-plus'
+import 'element-plus/dist/index.css'
 
+import { createApp } from 'vue'
 
 require("./bootstrap");
 
@@ -43,13 +45,10 @@ require("./bootstrap");
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
-//  app.config.globalProperties.$axios = axios;
-//  app.use(router);
-//  const vuestore = createStore(store);
-//  app.use(vuestore);
 
-const app = new Vue({
-    el: "#app",
-    router,
-    store,
-});
+createApp({
+    components:{
+        Home
+    }
+}).use(router).use(store).use(ElementPlus).mount('#app');
+

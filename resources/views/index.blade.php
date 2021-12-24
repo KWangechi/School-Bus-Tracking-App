@@ -1,4 +1,4 @@
 @extends('home')
 @section('content')
-<router-view></router-view>
+<router-view :key="$route.path"/>
 @endsection

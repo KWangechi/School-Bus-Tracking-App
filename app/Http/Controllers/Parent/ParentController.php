@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use App\Http\Controllers\Controller;
 use App\Models\Guardian;
 use App\Models\User;
+use phpDocumentor\Reflection\Types\Parent_;
 
 class ParentController extends Controller
 {
@@ -202,5 +203,36 @@ class ParentController extends Controller
                 ]);
             }
         }
+    }
+
+    public function showNotifications(){
+        $parent = Parent::where('user_id', auth()->user()->id)->first();
+
+        $notifications = $parent->user->unreadNotifications();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Notifications found!!',
+            'status_code' => Response::HTTP_OK,
+            'data' => $notifications
+        ]);
+
+    }
+
+    public function markNotification(Request $request){
+        $parent = Parent::where('user_id', auth()->user()->id)->first();
+
+    $parent->user->unreadNotifications->when($request->input('id'), function ($query) use ($request){
+        return $query->where('id', $request->input('id'));
+    })->markAsRead();
+
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Notification has been marked as read',
+        'status_code' => Response::HTTP_OK,
+
+    ]);
+    
     }
 }

@@ -6,9 +6,9 @@ import Dashboard from '../app/admin/dashboard';
 import Home from '../app/auth/index';
 
 //admin pages
-import DriversIndex from  '../app/admin/driver';
-import Parent from '../app/admin/parent'
-import Bus from '../app/admin/bus'
+import AdminDriver from  '../app/admin/driver';
+import AdminParent from '../app/admin/parent'
+import AdminBus from '../app/admin/bus'
 
 
 //driver pages
@@ -18,6 +18,14 @@ import Profile from '../app/driver/profile'
 import Notification from '../app/driver/notifications/index'
 import Unread from '../app/driver/notifications/unread'
 import Read from '../app/driver/notifications/read'
+
+//parent pages
+import Parent from '../app/parent/index'
+// import ParentMapComponent from '../app/parent/map'
+import ParentProfile from '../app/parent/profile'
+import ParentNotification from '../app/parent/notifications/index'
+import ParentUnread from '../app/parent/notifications/unread'
+import ParentRead from '../app/parent/notifications/read'
 
 
 const router = createRouter({
@@ -81,26 +89,49 @@ const router = createRouter({
             ]
         },
 
-        //admin pages
+        //parent
         {
-            name: 'parent',
-            path: '/parents',
-            component: Parent
-        },
-
-        {
-            name: 'bus',
-            path: '/buses',
-            component: Bus
-        },
-        {
-            name: 'drivers',
-            path: '/drivers',
-            component: DriversIndex
-        },
+            path: '/parent',
+            component: Parent,
+            children: [
+                // {
+                //     path: 'map',
+                //     component: MapComponent
+                // },
+                {
+                    path: 'profile',
+                    component: ParentProfile
+                },
         
-        
+                {
+                    path: 'notifications',
+                    component: ParentNotification,
+                    children: [
+                        {
+                            path: 'all',
+                            component: ParentRead
+                        },
 
+                        {
+                            path: 'inbox',
+                            component: ParentUnread
+                        },
+            ],
+        },
+    ]
+},
+
+        // {
+        //     name: 'bus',
+        //     path: '/buses',
+        //     component: Bus
+        // },
+        // {
+        //     name: 'drivers',
+        //     path: '/drivers',
+        //     component: DriversIndex
+        // },
+        
     ]
 });
 

@@ -18,7 +18,7 @@ class ParentController extends Controller
      */
     public function index()
     {
-        $parent = Guardian::where('user_id', auth()->user()->id)->get();
+        $parent = Guardian::where('user_id', auth()->user()->id)->first();
 
         if (empty($parent)) {
             return response()->json([
@@ -205,34 +205,154 @@ class ParentController extends Controller
         }
     }
 
-    public function showNotifications(){
-        $parent = Parent::where('user_id', auth()->user()->id)->first();
+    public function showAllNotifications()
+    {
+        $parent = Guardian::where('user_id', auth()->user()->id)->first();
 
-        $notifications = $parent->user->unreadNotifications();
+        $notifications = $parent->user->readNotifications;
 
-        return response()->json([
+        if (!$notifications) {
+            return response()->json([
+            'success' => false,
+            'message' => "You currently don't have notifications",
+            'status_code' => Response::HTTP_NOT_FOUND
+        ]);
+        } else {
+            return response()->json([
             'success' => true,
-            'message' => 'Notifications found!!',
+            'message' => "Notifications found!!!",
             'status_code' => Response::HTTP_OK,
             'data' => $notifications
         ]);
-
+        }
     }
 
-    public function markNotification(Request $request){
-        $parent = Parent::where('user_id', auth()->user()->id)->first();
+    public function markNotification(Request $request)
+    {
+        $parent = Guardian::where('user_id', auth()->user()->id)->first();
 
-    $parent->user->unreadNotifications->when($request->input('id'), function ($query) use ($request){
-        return $query->where('id', $request->input('id'));
-    })->markAsRead();
+        $parent->user->unreadNotifications->when($request->input('id'), function ($query) use ($request) {
+            return $query->where('id', $request->input('id'));
+        })->markAsRead();
 
 
-    return response()->json([
+        return response()->json([
         'success' => true,
         'message' => 'Notification has been marked as read',
         'status_code' => Response::HTTP_OK,
 
     ]);
-    
     }
+
+    public function showUnreadNotifications()
+    {
+        $parent = Guardian::where('user_id', auth()->user()->id)->first();
+
+        $notifications = $parent->user->unreadNotifications;
+
+        if (!$notifications) {
+            return response()->json([
+            'success' => false,
+            'message' => "You currently don't have notifications",
+            'status_code' => Response::HTTP_NOT_FOUND
+        ]);
+        } else {
+            return response()->json([
+            'success' => true,
+            'message' => "Notifications found!!!",
+            'status_code' => Response::HTTP_OK,
+            'data' => $notifications
+        ]);
+        }
+    }
+
+    public function deleteAllNotification()
+    {
+        $parent = Guardian::where('user_id', auth()->user()->id)->first();
+
+        $notifications = $parent->user->readNotifications;
+
+        // dd($notifications);
+        if ($notifications->each->delete()) {
+            return response()->json([
+        'success' => true,
+        'message' => 'Notification deleted successfully!!!',
+        'status_code' => Response::HTTP_OK,
+
+    ]);
+        } else {
+            return response()->json([
+        'success' => false,
+        'message' => 'Something went wrong. Please try again!',
+        'status_code' => Response::HTTP_INTERNAL_SERVER_ERROR
+
+    ]);
+        }
+    }
+
+    public function deleteNotification($id)
+    {
+        $parent = Guardian::where('user_id', auth()->user()->id)->first();
+
+        $notification = $parent->user->readNotifications->find($id);
+
+        // dd($notification);
+        if ($notification->delete()) {
+                    return response()->json([
+                'success' => true,
+                'message' => 'Notification deleted successfully!!!',
+                'status_code' => Response::HTTP_OK,
+        
+            ]);
+                } else {
+                    return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong. Please try again!',
+                'status_code' => Response::HTTP_INTERNAL_SERVER_ERROR
+        
+            ]);
+                }
+    }
+
+    public function deleteInbox()
+    {
+        $parent = Guardian::where('user_id', auth()->user()->id)->first();
+
+        $inbox = $parent->user->unreadNotifications;
+
+        // dd($inbox);
+        if ($inbox->each->delete()) {
+            return response()->json([
+        'success' => true,
+        'message' => 'Notification deleted successfully!!!',
+        'status_code' => Response::HTTP_OK,
+
+    ]);
+        } else {
+            return response()->json([
+        'success' => false,
+        'message' => 'Something went wrong. Please try again!',
+        'status_code' => Response::HTTP_INTERNAL_SERVER_ERROR
+
+    ]);
+        }
+    }
+
+    public function markAllNotifications(Request $request)
+    {
+        $parent = Guardian::where('user_id', auth()->user()->id)->first();
+
+        $parent->user->unreadNotifications->when($request->input('id'), function ($query) use ($request) {
+            return $query->where('id', $request->input('id'));
+        })->markAsRead();
+
+
+        return response()->json([
+        'success' => true,
+        'message' => 'Inbox has been marked as read',
+        'status_code' => Response::HTTP_OK,
+
+    ]);
+    }
+
 }

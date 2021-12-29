@@ -31,7 +31,7 @@ class TripStarted extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail', 'database'];
+        return ['database'];
     }
 
     /**
@@ -40,20 +40,20 @@ class TripStarted extends Notification
      * @param  mixed  $notifiable
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
-    public function toMail($notifiable)
-    {
-        // return (new MailMessage)
-        //             ->line('The introduction to the notification.')
-        //             ->action('Notification Action', url('/'))
-        //             ->line('Thank you for using our application!');
+//     public function toMail($notifiable)
+//     {
+//         // return (new MailMessage)
+//         //             ->line('The introduction to the notification.')
+//         //             ->action('Notification Action', url('/'))
+//         //             ->line('Thank you for using our application!');
 
-        return (new MailMessage)                    
-            ->line($this->newTrip['name'])
-            ->line($this->newTrip['body'])
-            ->action($this->newTrip['tripText'], $this->newTrip['tripUrl'])
-            ->line($this->newTrip['thanks']);
+//         return (new MailMessage)                    
+//             ->line($this->newTrip['name'])
+//             ->line($this->newTrip['body'])
+//             ->action($this->newTrip['tripText'], $this->newTrip['tripUrl'])
+//             ->line($this->newTrip['thanks']);
     
- }
+//  }
 
     /**
      * Get the array representation of the notification.

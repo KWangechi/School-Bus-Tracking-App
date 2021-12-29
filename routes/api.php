@@ -79,7 +79,6 @@ Route::group(['middleware' =>['auth:sanctum']], function () {
         Route::get('/notifications/all', [App\Http\Controllers\Driver\DriverController::class, 'showAllNotifications']);
         Route::get('/notifications/inbox', [App\Http\Controllers\Driver\DriverController::class, 'showUnreadNotifications']);
         Route::post('/markNotification', [App\Http\Controllers\Driver\DriverController::class, 'markNotification']);
-        // Route::post('/delete-notification', [App\Http\Controllers\Driver\DriverController::class, 'deleteNotification']);
         Route::delete('/deleteNotification/{id}', [App\Http\Controllers\Driver\DriverController::class, 'deleteNotification']);
         Route::post('/deleteAllNotifications', [App\Http\Controllers\Driver\DriverController::class, 'deleteAllNotification']);
         Route::post('/deleteInbox', [App\Http\Controllers\Driver\DriverController::class, 'deleteInbox']);
@@ -87,11 +86,14 @@ Route::group(['middleware' =>['auth:sanctum']], function () {
     });
 
     Route::prefix('parent')->group(function (){
-        Route::post('/send-notification', [App\Http\Controllers\Driver\DriverController::class, 'startTrip']);
-        Route::get('/notifications', [App\Http\Controllers\Driver\DriverController::class, 'showAllNotifications']);
-        Route::get('/unreadNotifications', [App\Http\Controllers\Driver\DriverController::class, 'showUnreadNotifications']);
-        Route::post('/markNotification', [App\Http\Controllers\Driver\DriverController::class, 'markNotification']);
-        Route::post('/delete-notification', [App\Http\Controllers\Driver\DriverController::class, 'deleteNotification']);
+        Route::get('/notifications/all', [App\Http\Controllers\Parent\ParentController::class, 'showAllNotifications']);
+        Route::get('/notifications/inbox', [App\Http\Controllers\Parent\ParentController::class, 'showUnreadNotifications']);
+        Route::post('/markNotification', [App\Http\Controllers\Parent\ParentController::class, 'markNotification']);
+        Route::delete('/deleteNotification/{id}', [App\Http\Controllers\Parent\ParentController::class, 'deleteNotification']);
+        Route::post('/deleteAllNotifications', [App\Http\Controllers\Parent\ParentController::class, 'deleteAllNotification']);
+        Route::post('/deleteInbox', [App\Http\Controllers\Parent\ParentController::class, 'deleteInbox']);
+        Route::post('/markAllNotifications', [App\Http\Controllers\Parent\ParentController::class, 'markAllNotifications']);
+
     });
 
 

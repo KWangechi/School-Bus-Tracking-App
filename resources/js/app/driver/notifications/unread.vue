@@ -4,6 +4,14 @@
         <div v-if="inbox.length !== 0">
             <button
                 type="button"
+                class="btn btn-secondary"
+                @click="markAllAsRead(inbox)"
+            >
+                Mark all as Read
+            </button>
+            
+            <button
+                type="button"
                 class="btn btn-danger float-lg-end"
                 @click="deleteInbox(inbox)"
             >
@@ -12,16 +20,18 @@
         </div>
         <br />
         <br />
-        
+
         <div v-if="inbox.length !== 0">
             <div v-for="unread in inbox" :key="unread.id">
-                <div
+                <!-- If the notification type is Trip Started -->
+                <div 
                     class="alert alert-primary"
                     role="alert"
-                    id="notification_alert"
+                    v-if="unread.type != notification_type"
                 >
                     Your child has been picked from school. Click here to see
                     the details:
+
                     <hr />
                     <p>{{ unread.id }}</p>
                     <hr />
@@ -33,6 +43,22 @@
                     <p>{{ unread.data.action }}</p>
 
                     <hr />
+                    <button
+                        type="button"
+                        @click="markAsRead(unread)"
+                        class="btn btn-primary"
+                    >
+                        Mark as read
+                    </button>
+                </div>
+
+                <!-- If the type is Destination Reached -->
+                <div class="alert alert-primary" role="alert" v-else>
+                    <p>{{ unread.data.message }}</p>
+                    <hr />
+                    <p>{{ unread.id }}</p>
+
+                    <hr>
                     <button
                         type="button"
                         @click="markAsRead(unread)"
@@ -59,7 +85,9 @@ export default {
         Notification,
     },
     data() {
-        return {};
+        return {
+            notification_type: "App\\Notifications\\DestinationReached",
+        };
     },
 
     computed: {
@@ -76,8 +104,12 @@ export default {
             this.$store.commit("READ_NOTIFICATION", notification);
         },
 
-        async deleteInbox(inbox){
-            this.$store.commit('DELETE_INBOX', inbox)
+        async deleteInbox(inbox) {
+            this.$store.commit("DELETE_INBOX", inbox);
+        },
+
+        async markAllAsRead(inbox){
+            this.$store.commit('MARK_ALL_AS_READ', inbox);
         }
     },
     mounted() {

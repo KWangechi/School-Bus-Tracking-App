@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers\Parent;
 
+use App\Events\SendLocation;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Controllers\Controller;
+use App\Models\Child;
 use App\Models\Guardian;
 use App\Models\User;
+use App\Notifications\DestinationReached;
+use Illuminate\Http\Client\Request as ClientRequest;
+use Illuminate\Support\Facades\Notification;
 use phpDocumentor\Reflection\Types\Parent_;
 
 class ParentController extends Controller
@@ -113,7 +118,6 @@ class ParentController extends Controller
             ]);
             }
         }
-        
     }
     /**
      * Display the specified resource.
@@ -205,6 +209,8 @@ class ParentController extends Controller
         }
     }
 
+
+    //Notifications functions
     public function showAllNotifications()
     {
         $parent = Guardian::where('user_id', auth()->user()->id)->first();
@@ -298,20 +304,20 @@ class ParentController extends Controller
 
         // dd($notification);
         if ($notification->delete()) {
-                    return response()->json([
+            return response()->json([
                 'success' => true,
                 'message' => 'Notification deleted successfully!!!',
                 'status_code' => Response::HTTP_OK,
         
             ]);
-                } else {
-                    return response()->json([
+        } else {
+            return response()->json([
                 'success' => false,
                 'message' => 'Something went wrong. Please try again!',
                 'status_code' => Response::HTTP_INTERNAL_SERVER_ERROR
         
             ]);
-                }
+        }
     }
 
     public function deleteInbox()
@@ -353,6 +359,30 @@ class ParentController extends Controller
         'status_code' => Response::HTTP_OK,
 
     ]);
+    }
+
+    public function getChildren(){
+        $parent = Guardian::where('user_id', auth()->user()->id)->first();
+
+        $child = Child::where('parent_id', $parent->id)->get();
+
+        if(!$child){
+            return response()->json([
+                'success' => false,
+                'message' => 'No child details',
+                'status_code' => Response::HTTP_NOT_FOUND,
+                'data' =>[],
+            ]);
+        }
+        else{
+            return response()->json([
+                'success' => true,
+                'message' => 'Child details found!!',
+                'status_code' => Response::HTTP_OK,
+                'data' => $child,
+            ]);
+
+        }
     }
 
 }

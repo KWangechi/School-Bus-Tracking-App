@@ -4,6 +4,9 @@ const state = {
     // isLoggedIn: false,
     user: {},
     errorMessage: null,
+    driverToken: null,
+    adminToken: null,
+    parentToken: null
 };
 
 const getters = {
@@ -17,6 +20,7 @@ const mutations = {
         axios
             .post("/api/login", user)
             .then((response) => {
+
                 localStorage.setItem("token", response.data.access_token);
                 localStorage.setItem("isLoggedIn", true);
 
@@ -93,7 +97,7 @@ const mutations = {
 };
 
 const actions = {};
-export const check = function () {};
+
 
 export default {
     state,

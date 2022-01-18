@@ -5,27 +5,34 @@ import Login from '../app/auth/login';
 import Dashboard from '../app/admin/dashboard';
 import Home from '../app/auth/index';
 
-//admin pages
+//admin routes
 import AdminDriver from  '../app/admin/driver';
 import AdminParent from '../app/admin/parent'
 import AdminBus from '../app/admin/bus'
 
+//admin driver routes
+import AdminDriverCreate from '../app/admin/driver/create'
 
-//driver pages
+
+//driver routes
 import Driver from '../app/driver/index'
 import MapComponent from '../app/driver/map'
+import NewMapComponent from '../app/driver/newMap'
+
 import Profile from '../app/driver/profile'
 import Notification from '../app/driver/notifications/index'
 import Unread from '../app/driver/notifications/unread'
 import Read from '../app/driver/notifications/read'
 
+
 //parent pages
 import Parent from '../app/parent/index'
-// import ParentMapComponent from '../app/parent/map'
+import ParentMap from '../app/parent/map'
 import ParentProfile from '../app/parent/profile'
 import ParentNotification from '../app/parent/notifications/index'
 import ParentUnread from '../app/parent/notifications/unread'
 import ParentRead from '../app/parent/notifications/read'
+import ChildProfile from '../app/parent/child_profile'
 
 
 const router = createRouter({
@@ -57,7 +64,7 @@ const router = createRouter({
             component: Home
         },
 
-        // driver pages
+        // driver routes
         {
             path: '/driver',
             component: Driver,
@@ -65,6 +72,10 @@ const router = createRouter({
                 {
                     path: 'map',
                     component: MapComponent
+                },
+                {
+                    path: 'newmap',
+                    component: NewMapComponent
                 },
                 {
                     path: 'profile',
@@ -89,18 +100,22 @@ const router = createRouter({
             ]
         },
 
-        //parent
+        //parent routes
         {
             path: '/parent',
             component: Parent,
             children: [
-                // {
-                //     path: 'map',
-                //     component: MapComponent
-                // },
+                {
+                    path: 'map',
+                    component: ParentMap
+                },
                 {
                     path: 'profile',
                     component: ParentProfile
+                },
+                {
+                    path: 'child',
+                    component: ChildProfile
                 },
         
                 {
@@ -121,18 +136,50 @@ const router = createRouter({
     ]
 },
 
-        // {
-        //     name: 'bus',
-        //     path: '/buses',
-        //     component: Bus
-        // },
-        // {
-        //     name: 'drivers',
-        //     path: '/drivers',
-        //     component: DriversIndex
-        // },
-        
+//admin Routes
+// {
+//     path:'/admin',
+//     component: AdminDriver,
+//     children:[
+//         {
+//             path:'driver',
+//             component: AdminDriver,
+//             children:[
+//                 { 
+//                     path:'create',
+//                     component: AdminDriverCreate,
+//                 },
+//                 {
+
+//                 },
+//                 { 
+
+//                 }
+//             ]
+//         },
+//         {
+//             path:'bus',
+//             component: AdminBus,
+//         },
+//         { 
+//             path: 'parent',
+//             component: AdminParent
+//         }
+//         // {
+//             //     name: 'bus',
+//             //     path: '/buses',
+//             //     component: Bus
+//             // },
+//             // {
+//             //     name: 'drivers',
+//             //     path: '/drivers',
+//             //     component: DriversIndex
+//             // },
+//     ]
+// }
     ]
+
+
 });
 
 export default router;

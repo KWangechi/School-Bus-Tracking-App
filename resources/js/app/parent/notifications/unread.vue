@@ -19,13 +19,14 @@
         </div>
         <br />
         <br />
-        
+
         <div v-if="inbox.length !== 0">
             <div v-for="unread in inbox" :key="unread.id">
+                <!-- if the notification type is Trip Started -->
                 <div
                     class="alert alert-primary"
                     role="alert"
-                    id="notification_alert"
+                    v-if="unread.type != notification_type"
                 >
                     Your child has been picked from school. Click here to see
                     the details:
@@ -39,6 +40,21 @@
                     <hr />
                     <p>{{ unread.data.action }}</p>
 
+                    <hr />
+                    <button
+                        type="button"
+                        @click="markAsRead(unread)"
+                        class="btn btn-primary"
+                    >
+                        Mark as read
+                    </button>
+                </div>
+
+                <!-- if notification type is Destination Arrived -->
+                <div class="alert alert-primary" role="alert" v-else>
+                    <p>{{ unread.data.message }}</p>
+                    <hr />
+                    <p>{{ unread.id }}</p>
                     <hr />
                     <button
                         type="button"
@@ -66,7 +82,9 @@ export default {
         Notification,
     },
     data() {
-        return {};
+        return {
+            notification_type: "App\\Notifications\\DestinationReached",
+        };
     },
 
     computed: {
@@ -83,12 +101,12 @@ export default {
             this.$store.commit("READ_NOTIFICATION", notification);
         },
 
-        async deleteInbox(inbox){
-            this.$store.commit('DELETE_INBOX', inbox)
+        async deleteInbox(inbox) {
+            this.$store.commit("DELETE_INBOX", inbox);
         },
-        async markAllAsRead(inbox){
-            this.$store.commit('MARK_ALL_AS_READ', inbox)
-        }
+        async markAllAsRead(inbox) {
+            this.$store.commit("MARK_ALL_AS_READ", inbox);
+        },
     },
     mounted() {
         this.getInbox();

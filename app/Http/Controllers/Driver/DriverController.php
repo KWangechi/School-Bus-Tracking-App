@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Driver;
 
+use App\Events\SendLocation;
 use App\Models\Driver;
 use App\Models\Guardian;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Notifications\DestinationReached;
 use App\Notifications\TripStarted;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
@@ -22,9 +24,6 @@ class DriverController extends Controller
     public function index()
     {
         $driver = Driver::where('user_id', auth()->user()->id)->first();
-
-        // dd($driver);
-
         if (auth()->user()->role_id == User::role_driver) {
             return response()->json([
                 'success' => true,
@@ -214,7 +213,6 @@ class DriverController extends Controller
     {
         $users = User::all();
 
-        $driver = Driver::where('user_id', auth()->user()->id)->first();
         $newTrip = [
         'name' => 'Departure from school!!',
         'body' => 'This is to notify you that the trip has started',
@@ -266,6 +264,22 @@ class DriverController extends Controller
     ]);
     }
 
+    public function markAllNotifications(Request $request){
+        $driver = Driver::where('user_id', auth()->user()->id)->first();
+
+        $driver->user->unreadNotifications->when($request->input('id'), function ($query) use ($request) {
+            return $query->where('id', $request->input('id'));
+        })->markAsRead();
+
+
+        return response()->json([
+        'success' => true,
+        'message' => 'Inbox has been marked as read',
+        'status_code' => Response::HTTP_OK,
+
+    ]);
+    }
+
     public function showUnreadNotifications()
     {
         $driver = Driver::where('user_id', auth()->user()->id)->first();
@@ -283,7 +297,7 @@ class DriverController extends Controller
             'success' => true,
             'message' => "Notifications found!!!",
             'status_code' => Response::HTTP_OK,
-            'data' => $notifications
+            'data' => $notifications,
         ]);
         }
     }
@@ -342,7 +356,6 @@ class DriverController extends Controller
 
         $inbox = $driver->user->unreadNotifications;
 
-        // dd($inbox);
         if ($inbox->each->delete()) {
             return response()->json([
         'success' => true,
@@ -360,6 +373,66 @@ class DriverController extends Controller
         }
     }
 
+    public function sendLocation(Request $request)
+    {
+        $lat = $request->input('lat');
+        $long = $request->input('long');
+        $location = ["lat"=>$lat, "long"=>$long];
 
+        event(new SendLocation($location));
+        
+        return response()->json([
+            'success'=>true,
+            'message' => 'Location received!',
+            'status_code' => Response::HTTP_OK,
+            'data'=>$location
+        ]);
+    }
 
+    public function getAddresses(){
+        $addresses = 'ojo';
+
+        if(!$addresses){
+            return response()->json([
+                'success' => false,
+                'message' => 'Addresses not found!',
+                'status_code' => Response::HTTP_NOT_FOUND,
+                'data' => []
+
+            ]);
+        }
+
+        else{
+            return response()->json([
+                'success' => true,
+                'message' => 'Addresses found!',
+                'status_code' => Response::HTTP_OK,
+                'data' => $addresses
+
+            ]);
+        }
+
+    }
+
+    public function destinationReached(){
+        // $driver = Driver::where('user_id', auth()->user()->id)->first();
+
+        $parents = Guardian::all();
+
+        $users = User::all();
+
+        $message = 'Your child has arrived to their destination!!';
+        
+        // Notification::send($driver, new DestinationReached($message));
+        Notification::send($parents, new DestinationReached($message));
+
+        // Notification::sendNow($users, new DestinationReached($message));
+
+        return response()->json([
+            'success' => true,
+            'driver_message' => 'Notification sent successfully!',
+            'status_code' => Response::HTTP_OK,
+            'data' => $message
+        ]);
+    }
 }

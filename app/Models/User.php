@@ -6,7 +6,6 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -63,11 +62,6 @@ class User extends Authenticatable
         return $this->hasOne(Guardian::class);
     }
 
-    // public function userRoles()
-    // {
-    //     return $this->hasOne(UserRole::class, 'user_id');
-    // }
-    
     public function role()
     {
         return $this->hasOne(Role::class);

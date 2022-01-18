@@ -3,90 +3,129 @@
         <div id="map"></div>
         <div class="text-center">
             <br />
-            
         </div>
     </div>
 </template>
 
 <script>
+// import { mapGetters } from "vuex";
 export default {
     data() {
         return {
-            latLng: "",
-            map: {},
-            addresses: [
-                {
-                    latitude: -1.46789,
-                    longitude: 45.8732,
-                },
-                {
-                    latitude: -1.00865,
-                    longitude: 45.05643,
-                },
-                {
-                    latitude: -1.76,
-                    longitude: 45.543216,
-                },
-            ],
-            marker: "",
-
+            //Kikuyu coordinates
+            latLng: {
+                latitude: -1.3169,
+                longitude: 36.6903,
+            },
+            myMap: {},
+            marker: null,
+            image: "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png",
+            flag: null,
+            myLocation: {},
+            driverLocation: {},
+            pathCoordinates: [],
         };
     },
+
+    computed: {},
     methods: {
-        getMap(myLatLng) {
-            this.map = new google.maps.Map(document.getElementById("map"), {
-                center: myLatLng,
-                zoom: 14,
-                mapTypeId: google.maps.MapTypeId.ROADMAP,
+        initMap() {
+            this.myLocation = new google.maps.LatLng({
+                lat: this.latLng.latitude,
+                lng: this.latLng.longitude,
             });
 
-            this.autoUpdate(this.latLng)
+            this.myMap = new google.maps.Map(document.getElementById("map"), {
+                center: this.myLocation,
+                zoom: 9,
+                mapTypeId: "terrain",
+            });
+
+            //create a flag for the parent's address
+            this.flag = new google.maps.Marker({
+                position: this.myLocation,
+                icon: this.image,
+                map: this.myMap,
+            });
+
         },
 
-        autoUpdate(myLatLng) {
-            var marker = null;
-            if (marker) {
-                marker.setPosition(myLatLng);
-            } else {
-                marker = new google.maps.Marker({
-                    position: myLatLng,
-                    map: this.map,
-                });
-            }
+        subscribe() {
+            Echo.channel("location").listen("SendLocation", (e) => {
+                console.log(e);
+                this.driverLocation = e.location;
+
+                //check if marker exists
+                if (this.marker) {
+                    this.updateMarker(this.driverLocation);
+                } else {
+                    this.marker = new google.maps.Marker({
+                        position: new google.maps.LatLng(
+                            this.driverLocation.lat,
+                            this.driverLocation.long
+                        ),
+                        map: this.myMap,
+                        animation: google.maps.Animation.DROP,
+                    });
+
+                    this.pathCoordinates.push(
+                        new google.maps.LatLng(
+                            this.driverLocation.lat,
+                            this.driverLocation.long
+                        )
+                    );
+                }
+            });
         },
 
-        success(position) {
-            console.log(position);
-            var lat = position.coords.latitude;
-            var long = position.coords.longitude;
+        updateMarker(location) {
+            let newPos = new google.maps.LatLng(location.lat, location.long);
+            this.myMap.setCenter(newPos);
+            this.marker.setPosition(newPos);
+            //update the marker of the map
 
-            this.latLng = new google.maps.LatLng(lat, long);
-
-            this.getMap(this.latLng);
-        },
-        geoLocationInit() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    this.success,
-                    this.fail
-                );
-            } else {
-                alert("Browser you are using is not supprted");
-            }
-        },
-        fail() {
-            alert("Oops. Something went wrong");
-        },
-
-        async getAddresses(){
-             console.log('This should populate the map with many addresses')
+            this.pathCoordinates.push(new google.maps.LatLng(newPos));
             
-        }
+            console.log(
+                "Path Coordinates after updating locations: " +
+                    this.pathCoordinates
+            );
+
+            //draw a polyline as the driver is moving
+            var polyLine = new google.maps.Polyline({
+                path: this.pathCoordinates,
+                geodesic: true,
+                strokeColor: "#FF0000",
+                strokeOpacity: 1.0,
+                strokeWeight: 4,
+            });
+
+            polyLine.setMap(this.myMap);
+
+            console.log(polyLine);
+
+            //check when the child has arrived at home
+            if (newPos.equals(this.myLocation)) {
+                alert('Your child has arrived at their destination')
+                this.destinationReached();
+            } else {
+                console.log(
+                    "Your child is on their way, their address is: " +
+                        new google.maps.LatLng(location.lat, location.long)
+                );
+            }
+        },
+
+        destinationReached() {
+            this.$store.commit('DESTINATION_REACHED')
+        },
     },
     mounted() {
-        this.geoLocationInit();
-        this.getAdresses();
+        this.subscribe();
+        this.initMap();
     },
+
+    watch: {},
 };
 </script>
 <style scoped>

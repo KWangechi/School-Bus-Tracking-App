@@ -1,7 +1,8 @@
 <?php
 
+use App\Events\SendLocation;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ParentController;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,21 +32,16 @@ Route::get('{any}', function(){
 })->where('any', '.*');
 
 
-// Route::get('/', function () {
-//     return view('welcome');
+//sending the  coordinates to the parents
+// Route::post('/map', [App\Http\Controllers\Driver\DriverController::class, 'sendLocation']);
+// Route::post('/map', function (Request $request) {
+//     $lat = $request->input('lat');
+//     $long = $request->input('long');
+//     $location = ["lat"=>$lat, "long"=>$long];
+
+
+//     event(new SendLocation($location));
+//     return response()->json(['status'=>'success', 'data'=>$location]);
 // });
 
-// Route::get('/parents', function () {
-//     return view('parents.index'); 
-//  });
-
-// Route::get('/parents/create', function () {
-//     return view('parents.create'); 
-//  });
-
-// Route::post('/parents/new', [ParentController::class, 'newParent']);
-
-// Route::get('/new', function () {
-//    return view('parents.new'); 
-// });
 

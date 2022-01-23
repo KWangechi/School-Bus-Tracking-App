@@ -1,11 +1,11 @@
 <template>
     <div>
         <p>Unread Notifications</p>
-        <div v-if="inbox.length !== 0">
+        <div v-if="driver_inbox.length !== 0">
             <button
                 type="button"
                 class="btn btn-secondary"
-                @click="markAllAsRead(inbox)"
+                @click="markAllAsRead(driver_inbox)"
             >
                 Mark all as Read
             </button>
@@ -13,7 +13,7 @@
             <button
                 type="button"
                 class="btn btn-danger float-lg-end"
-                @click="deleteInbox(inbox)"
+                @click="deleteInbox(driver_inbox)"
             >
                 Delete Inbox
             </button>
@@ -21,8 +21,8 @@
         <br />
         <br />
 
-        <div v-if="inbox.length !== 0">
-            <div v-for="unread in inbox" :key="unread.id">
+        <div v-if="driver_inbox.length !== 0">
+            <div v-for="unread in driver_inbox" :key="unread.id">
                 <!-- If the notification type is Trip Started -->
                 <div 
                     class="alert alert-primary"
@@ -92,24 +92,24 @@ export default {
 
     computed: {
         ...mapGetters({
-            inbox: "inbox",
+            driver_inbox: "driver_inbox",
         }),
     },
 
     methods: {
         async getInbox() {
-            this.$store.commit("GET_INBOX");
+            this.$store.commit("GET_DRIVER_INBOX");
         },
-        async markAsRead(notification) {
-            this.$store.commit("READ_NOTIFICATION", notification);
-        },
-
-        async deleteInbox(inbox) {
-            this.$store.commit("DELETE_INBOX", inbox);
+        async markAsRead(driver_notification) {
+            this.$store.commit("READ_DRIVER_NOTIFICATION", driver_notification);
         },
 
-        async markAllAsRead(inbox){
-            this.$store.commit('MARK_ALL_AS_READ', inbox);
+        async deleteInbox(driver_inbox) {
+            this.$store.commit("DELETE_DRIVER_INBOX", driver_inbox);
+        },
+
+        async markAllAsRead(driver_inbox){
+            this.$store.commit('MARK_ALL_DRIVER_AS_READ', driver_inbox);
         }
     },
     mounted() {

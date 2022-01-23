@@ -22,19 +22,11 @@
         <div v-if="notifications.length !== 0">
             <div v-for="notification in notifications" :key="notification.id">
                 <div class="alert alert-secondary" role="alert">
-                    Your child has been picked from school. Click here to see
-                    the details:
+                    Your child has been picked from school. Details here
                     <hr />
-                    <p>{{ notification.id }}</p>
-                    <hr />
-                    <p>{{ notification.data.trip_id }}</p>
-
-                    <hr />
-                    <p>{{ notification.data.body }}</p>
+                    <p>{{ notification.data.message }}</p>
                     <hr />
                     <p>{{ notification.data.action }}</p>
-                    <!-- <p>{{ user.name }}</p> -->
-
                     <hr />
                     <button
                         type="button"
@@ -58,6 +50,8 @@ export default {
     data() {
         return {
             message: null,
+            notification_type: "App\\Notifications\\DestinationReached",
+
         };
     },
 

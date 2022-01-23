@@ -215,7 +215,8 @@ class ParentController extends Controller
     {
         $parent = Guardian::where('user_id', auth()->user()->id)->first();
 
-        $notifications = $parent->user->readNotifications;
+        //user notifications
+        $notifications = $parent->readNotifications;
 
         if (!$notifications) {
             return response()->json([
@@ -237,7 +238,7 @@ class ParentController extends Controller
     {
         $parent = Guardian::where('user_id', auth()->user()->id)->first();
 
-        $parent->user->unreadNotifications->when($request->input('id'), function ($query) use ($request) {
+        $parent->unreadNotifications->when($request->input('id'), function ($query) use ($request) {
             return $query->where('id', $request->input('id'));
         })->markAsRead();
 
@@ -254,7 +255,9 @@ class ParentController extends Controller
     {
         $parent = Guardian::where('user_id', auth()->user()->id)->first();
 
-        $notifications = $parent->user->unreadNotifications;
+        //parent notifications
+        $notifications = $parent->unreadNotifications;
+
 
         if (!$notifications) {
             return response()->json([
@@ -270,13 +273,15 @@ class ParentController extends Controller
             'data' => $notifications
         ]);
         }
+
+        // dd($notifications);
     }
 
     public function deleteAllNotification()
     {
         $parent = Guardian::where('user_id', auth()->user()->id)->first();
 
-        $notifications = $parent->user->readNotifications;
+        $notifications = $parent->readNotifications;
 
         // dd($notifications);
         if ($notifications->each->delete()) {
@@ -300,7 +305,7 @@ class ParentController extends Controller
     {
         $parent = Guardian::where('user_id', auth()->user()->id)->first();
 
-        $notification = $parent->user->readNotifications->find($id);
+        $notification = $parent->readNotifications->find($id);
 
         // dd($notification);
         if ($notification->delete()) {
@@ -324,7 +329,7 @@ class ParentController extends Controller
     {
         $parent = Guardian::where('user_id', auth()->user()->id)->first();
 
-        $inbox = $parent->user->unreadNotifications;
+        $inbox = $parent->unreadNotifications;
 
         // dd($inbox);
         if ($inbox->each->delete()) {
@@ -348,7 +353,7 @@ class ParentController extends Controller
     {
         $parent = Guardian::where('user_id', auth()->user()->id)->first();
 
-        $parent->user->unreadNotifications->when($request->input('id'), function ($query) use ($request) {
+        $parent->unreadNotifications->when($request->input('id'), function ($query) use ($request) {
             return $query->where('id', $request->input('id'));
         })->markAsRead();
 

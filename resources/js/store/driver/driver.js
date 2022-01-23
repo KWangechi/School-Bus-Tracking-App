@@ -2,55 +2,57 @@ import axios from "axios";
 import store from "./../index";
 import Swal from "sweetalert2";
 import { ElMessage } from "element-plus";
+import {Html5QrcodeScanner} from "html5-qrcode"
+import {Html5Qrcode} from "html5-qrcode"
+
 
 const state = {
-    inbox: {},
+    driver_inbox: {},
     driver: {},
-    notifications: {},
-    message: null,
+    driver_notifications: {},
+    driver_message: null,
 };
 
 const getters = {
-    inbox: (state) => state.inbox,
+    driver_inbox: (state) => state.driver_inbox,
     driver: (state) => state.driver,
-    notifications: (state) => state.notifications,
-    message: (state) => state.message,
+    driver_notifications: (state) => state.driver_notifications,
+    driver_message: (state) => state.driver_message,
 };
 
 const mutations = {
-    GET_ALL_NOTIFICATIONS(state) {
+    GET_ALL_DRIVER_NOTIFICATIONS(state) {
         axios.defaults.headers.common["Authorization"] =
             "Bearer " + localStorage.getItem("token");
+
         axios
             .get("/api/driver/notifications/all")
             .then((response) => {
-                state.notifications = response.data.data;
+                state.driver_notifications = response.data.data; 
             })
             .catch((errors) => {
-                console.log(errors);
+                console.log(errors)
             });
     },
 
-    GET_INBOX(state) {
+    GET_DRIVER_INBOX(state) {
         axios.defaults.headers.common["Authorization"] =
             "Bearer " + localStorage.getItem("token");
+
         axios
             .get("/api/driver/notifications/inbox")
             .then((response) => {
-                state.inbox = response.data.data;
-                console.log(state.inbox);
-                // console.log(response.data.data);
-                // console.log(response);
-
+                state.driver_inbox = response.data.data;
+                console.log(state.driver_inbox);
             })
             .catch((errors) => {
                 console.log(errors);
             });
     },
 
-        MARK_ALL_AS_READ(state, inbox) {
+        MARK_ALL_DRIVER_AS_READ(state, driver_inbox) {
         axios
-            .post("/api/driver/markAllNotifications", inbox)
+            .post("/api/driver/markAllNotifications", driver_inbox)
             .then((response) => {
                 console.log(response);
                 if (response.data.success) {
@@ -59,9 +61,9 @@ const mutations = {
                         message: "All inbox marked as read",
                         type: "success",
                     });
-                    store.commit("GET_INBOX");
+                    store.commit("GET_DRIVER_INBOX");
                 } else {
-                    state.message = "Something went wrong! Please try again";
+                    state.driver_message = "Something went wrong! Please try again";
                 }
             })
             .catch((errors) => {
@@ -82,31 +84,29 @@ const mutations = {
             });
     },
 
-    READ_NOTIFICATION(state, notification) {
+    READ_DRIVER_NOTIFICATION(state, driver_notification) {
         axios
-            .post("/api/driver/markNotification", notification)
+            .post("/api/driver/markNotification", driver_notification)
             .then((response) => {
                 console.log(response);
                 if (response.data.success) {
-                    console.log("Message should be marked as read");
-                    store.commit("GET_INBOX");
+                    store.commit("GET_DRIVER_INBOX");
                     ElMessage({
                         showClose: true,
                         message: "Message read successfully!!",
                         type: "success",
                     });
                 } else {
-                    state.message = "Something went wrong! Please try again";
+                    state.driver_message = "Something went wrong! Please try again";
                 }
             })
             .catch((errors) => {
                 console.log(errors);
             });
 
-        console.log(notification);
     },
 
-    DELETE_NOTIFICATION(state, id) {
+    DELETE_DRIVER_NOTIFICATION(state, id) {
         Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",
@@ -128,10 +128,9 @@ const mutations = {
                                 "success"
                             );
 
-                            store.commit("GET_ALL_NOTIFICATIONS");
+                            store.commit("GET_ALL_DRIVER_NOTIFICATIONS");
                         } else {
-                            state.message = response.data.message;
-                            // console.log('Something has gone horribly wrong!!!')
+                            state.driver_message = response.data.message;
                         }
                     })
                     .catch((errors) => {
@@ -141,9 +140,9 @@ const mutations = {
         });
     },
 
-    DELETE_ALL_NOTIFICATIONS(state, notifications) {
+    DELETE_ALL_DRIVER_NOTIFICATIONS(state, driver_notifications) {
         axios
-            .post("/api/driver/deleteAllNotifications", notifications)
+            .post("/api/driver/deleteAllNotifications", driver_notifications)
             .then((response) => {
                 console.log(response);
                 if (response.data.success) {
@@ -152,7 +151,7 @@ const mutations = {
                         message: "Notifications successfully deleted!!",
                         type: "success",
                     });
-                    store.commit("GET_ALL_NOTIFICATIONS");
+                    store.commit("GET_ALL_DRIVER_NOTIFICATIONS");
                 } else {
                     ElMessage({
                         showClose: true,
@@ -168,15 +167,25 @@ const mutations = {
         axios
             .post("/api/driver/send-notification")
             .then((response) => {
-                console.log("Notification successfully sent!!!" + response);
+                ElMessage({
+                    type: "success",
+                    message: "Notification sent successfully!!!"
+                })
+                console.log(response)
+
             })
             .catch((errors) => {
-                console.log(errors);
+                // console.log(errors);
+                ElMessage({
+                    type: "success",
+                    message: "Error sending notification!!"
+                })
+                console.log("Notification has not been sent!!")
             });
     },
 
-    DELETE_INBOX(state, inbox) {
-        axios.post("/api/driver/deleteInbox", inbox).then((response) => {
+    DELETE_DRIVER_INBOX(state, driver_inbox) {
+        axios.post("/api/driver/deleteInbox", driver_inbox).then((response) => {
             console.log(response);
             if (response.data.success) {
                 ElMessage({
@@ -184,7 +193,7 @@ const mutations = {
                     message: "Inbox deleted successfully!!",
                     type: "success",
                 });
-                store.commit("GET_INBOX");
+                store.commit("GET_DRIVER_INBOX");
             } else {
                 ElMessage({
                     showClose: true,
@@ -199,8 +208,7 @@ const mutations = {
         axios
             .post("/api/driver/destinationReached")
             .then((response) => {
-                console.log("Destination reached notification: " + response);
-
+                console.log(response)
                 ElMessage({
                     showClose: true,
                     message: "Destination arrived and notification sent successfully!!",
@@ -212,6 +220,48 @@ const mutations = {
             });
 
     },
+
+SCAN_QRCODE(state){
+    Html5Qrcode.getCameras().then(devices => {
+        /**
+         * devices would be an array of objects of type:
+         * { id: "id", label: "label" }
+         */
+        if (devices && devices.length) {
+          var cameraId = devices[0].id;
+          
+          //second argument shows verbose
+          const html5QrCode = new Html5Qrcode("reader", true);
+
+          // .. use this to start scanning
+          html5QrCode.start(cameraId, 
+            {
+              fps: 10,    // Optional, frame per seconds for qr code scanning
+              qrbox: { width: 250, height: 250 }  // Optional, if you want bounded box UI
+            },
+            (decodedText, decodedResult) => {
+              // do something when code is read
+              console.log('QR Code already scanned!!')
+
+
+            //   console.log(decodedText)
+            //   console.log(decodedResult);
+            },
+            (errorMessage) => {
+              // parse error, ignore it.
+              console.log(errorMessage)
+            })
+          .catch((err) => {
+            // Start failed, handle it.
+            console.log('Scanning error: ' + err);
+          });
+
+        }
+      }).catch(errors => {
+        console.log(errors)
+      });
+},
+
 };
 
 export default {

@@ -6,7 +6,7 @@ const state = {
     errorMessage: null,
     driverToken: null,
     adminToken: null,
-    parentToken: null
+    parentToken: null,
 };
 
 const getters = {
@@ -20,14 +20,13 @@ const mutations = {
         axios
             .post("/api/login", user)
             .then((response) => {
-
                 localStorage.setItem("token", response.data.access_token);
                 localStorage.setItem("isLoggedIn", true);
 
                 state.user = response.data.data;
 
                 if (response.data.success && response.data.data.role_id == 1) {
-                    window.location.href = "/dashboard";
+                    window.location.href = "/admin";
                 } else if (
                     response.data.success &&
                     response.data.data.role_id == 2
@@ -57,6 +56,7 @@ const mutations = {
             .post("/api/logout")
             .then((response) => {
                 localStorage.removeItem("token");
+                localStorage.setItem("isLoggedIn", false);
                 if (response.data.success) {
                     window.location.href = "/login";
                     ElMessage({
@@ -71,14 +71,13 @@ const mutations = {
                 console.error(error);
             });
 
-        localStorage.setItem("isLoggedIn", false);
     },
 
     SET_USER(state) {
         let token = localStorage.getItem("token");
-        let login = localStorage.getItem("isLoggedIn");
+        // let login = localStorage.getItem("isLoggedIn");
 
-        return token && login ? true : false;
+        return token ? true : false;
     },
 
     GET_USER(state) {
@@ -97,7 +96,6 @@ const mutations = {
 };
 
 const actions = {};
-
 
 export default {
     state,

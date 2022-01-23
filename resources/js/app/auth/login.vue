@@ -111,5 +111,16 @@ export default {
         },
     },
 
+    mounted(){
+        let login = localStorage.getItem("isLoggedIn")
+        console.log("Login status: " + login)
+
+        if(login == true){
+            login = localStorage.setItem("isLoggedIn", false)
+        }
+
+        console.log("After clearing login: " + login)
+    }
+
 };
 </script>

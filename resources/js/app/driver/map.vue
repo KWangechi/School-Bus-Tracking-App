@@ -225,16 +225,34 @@ export default {
         async updateLocation() {
             //automatically update the position of the map as the person is moving
             // navigator.geolocation.getCurrentPosition((position) => {
+            //     // console.log("Location for the parent and driver: ")
+            //     // console.log(position)
+
+            //     let latitude = position.coords.latitude
+            //     let longitude = position.coords.longitude
+
+            //     console.log('New Location is: ' + new google.maps.LatLng(latitude,longitude))
+
+            //     this.pos = {
+            //     //current location
+            //     lat: latitude,
+            //     long: longitude,
+            // };
+
+            // console.log(this.pos)
+            //     // axios.post("/api/map", this.pos).then((response) => {
+            //     //     console.log(response);
+            //     // });
             // });
 
             this.pos = {
+                //Kikuyu
                 lat: -1.3169,
                 long: 36.6903,
             };
-
             axios.post("/api/map", this.pos).then((response) => {
-                console.log(response);
-            });
+                    console.log(response);
+                });
         },
 
         destinationReached() {
@@ -248,7 +266,6 @@ export default {
     },
 
     watch: {},
-
     computed: {},
 };
 </script>

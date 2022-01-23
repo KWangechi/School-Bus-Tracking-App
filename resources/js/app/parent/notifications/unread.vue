@@ -28,18 +28,17 @@
                     role="alert"
                     v-if="unread.type != notification_type"
                 >
-                    Your child has been picked from school. Click here to see
-                    the details:
-                    <hr />
-                    <p>{{ unread.id }}</p>
-                    <hr />
-                    <p>{{ unread.data.trip_id }}</p>
-
+                    Your child has been picked from school. Details here
                     <hr />
                     <p>{{ unread.data.body }}</p>
                     <hr />
-                    <p>{{ unread.data.action }}</p>
-
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        @click="viewMap"
+                    >
+                        Track their location here
+                    </button>
                     <hr />
                     <button
                         type="button"
@@ -73,12 +72,12 @@
 </template>
 
 <script>
-import Driver from "../index.vue";
+import Guardian from "../index.vue";
 import Notification from "./index";
 import { mapGetters } from "vuex";
 export default {
     components: {
-        Driver,
+        Guardian,
         Notification,
     },
     data() {
@@ -106,6 +105,9 @@ export default {
         },
         async markAllAsRead(inbox) {
             this.$store.commit("MARK_ALL_AS_READ", inbox);
+        },
+        viewMap() {
+            window.location.href = "/parent/map";
         },
     },
     mounted() {

@@ -89,9 +89,7 @@ Route::group(['middleware' =>['auth:sanctum']], function () {
 
         //sending the  coordinates to the parents
         // Route::post('/map', [App\Http\Controllers\Driver\DriverController::class, 'sendLocation']);
-        Route::post('/destinationReached', [App\Http\Controllers\Driver\DriverController::class, 'destinationReached']);
-
-        
+        Route::post('/destinationReached', [App\Http\Controllers\Driver\DriverController::class, 'destinationReached']); 
     });
 
     Route::prefix('parent')->group(function (){
@@ -106,11 +104,6 @@ Route::group(['middleware' =>['auth:sanctum']], function () {
         Route::get('/child', [App\Http\Controllers\Parent\ParentController::class, 'getChildren']);
 
     });
-
-
-    //notifications(parent module)
-    // Route::get('/notifications', [App\Http\Controllers\Parent\ParentController::class, 'showNotifications']);
-    // Route::post('/markNotification', [App\Http\Controllers\Parent\ParentController::class, 'markNotification']);
 
 });
 

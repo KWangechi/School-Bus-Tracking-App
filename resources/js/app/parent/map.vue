@@ -9,6 +9,7 @@
 
 <script>
 // import { mapGetters } from "vuex";
+import { ElMessage } from "element-plus";
 export default {
     data() {
         return {
@@ -82,7 +83,6 @@ export default {
             let newPos = new google.maps.LatLng(location.lat, location.long);
             this.myMap.setCenter(newPos);
             this.marker.setPosition(newPos);
-            //update the marker of the map
 
             this.pathCoordinates.push(new google.maps.LatLng(newPos));
             
@@ -106,18 +106,17 @@ export default {
 
             //check when the child has arrived at home
             if (newPos.equals(this.myLocation)) {
-                alert('Your child has arrived at their destination')
-                this.destinationReached();
+                // alert('Your child has arrived at their destination')
+                ElMessage({
+                    type: 'message',
+                    message: 'You have a new notification!!'
+                })
             } else {
                 console.log(
                     "Your child is on their way, their address is: " +
                         new google.maps.LatLng(location.lat, location.long)
                 );
             }
-        },
-
-        destinationReached() {
-            this.$store.commit('DESTINATION_REACHED')
         },
     },
     mounted() {

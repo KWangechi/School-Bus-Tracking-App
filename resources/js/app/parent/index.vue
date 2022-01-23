@@ -198,7 +198,7 @@ export default {
     },
     mounted() {
         if (!this.setUser()) {
-            window.location.href = "/";
+            window.location.href = "/login";
         }
         this.getUser();
         this.getInbox();

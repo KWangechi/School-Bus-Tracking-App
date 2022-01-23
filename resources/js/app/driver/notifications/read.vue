@@ -1,26 +1,21 @@
 <template>
     <div>
         <p>Notifications Panel</p>
-        <div v-if="notifications.length !== 0">
+        <div v-if="driver_notifications.length !== 0">
             <button
                 type="button"
                 class="btn btn-danger float-lg-end"
-                @click="deleteAll(notifications)"
+                @click="deleteAll(driver_notifications)"
             >
                 Delete all
             </button>
         </div>
         <br />
         <br />
-
-        <div class="alert alert-success" role="alert" v-if="message != null">
-            {{ message }}
-        </div>
-
         <!-- page for all notifications -->
 
-        <div v-if="notifications.length !== 0">
-            <div v-for="notification in notifications" :key="notification.id">
+        <div v-if="driver_notifications.length !== 0">
+            <div v-for="notification in driver_notifications" :key="notification.id">
                 <div class="alert alert-secondary" role="alert">
                     Your child has been picked from school. Click here to see
                     the details:
@@ -33,7 +28,6 @@
                     <p>{{ notification.data.body }}</p>
                     <hr />
                     <p>{{ notification.data.action }}</p>
-                    <!-- <p>{{ user.name }}</p> -->
 
                     <hr />
                     <button
@@ -63,22 +57,22 @@ export default {
 
     computed:{
         ...mapGetters({
-        notifications: 'notifications'
+        driver_notifications: 'driver_notifications'
 
         })
     },
 
     methods: {
         async getNotifications() {
-            this.$store.commit('GET_ALL_NOTIFICATIONS');
+            this.$store.commit('GET_ALL_DRIVER_NOTIFICATIONS');
         },
 
          async deleteNotification(id) {
-             this.$store.commit('DELETE_NOTIFICATION', id);
+             this.$store.commit('DELETE_DRIVER_NOTIFICATION', id);
         },
 
-        async deleteAll(notifications){
-            this.$store.commit('DELETE_ALL_NOTIFICATIONS', notifications)
+        async deleteAll(driver_notifications){
+            this.$store.commit('DELETE_ALL_DRIVER_NOTIFICATIONS', driver_notifications)
 
         }
     },

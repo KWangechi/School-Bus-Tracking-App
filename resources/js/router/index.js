@@ -1,185 +1,215 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from "vue-router";
 
-import Register from '../app/auth/register';
-import Login from '../app/auth/login';
-import Dashboard from '../app/admin/dashboard';
-import Home from '../app/auth/index';
+import Register from "../app/auth/register";
+import Login from "../app/auth/login";
+import AdminDashboard from "../app/admin/dashboard";
+import Users from "../app/admin/users";
+import Home from "../app/auth/index";
 
 //admin routes
-import AdminDriver from  '../app/admin/driver';
-import AdminParent from '../app/admin/parent'
-import AdminBus from '../app/admin/bus'
+import AdminDriver from "../app/admin/driver/table";
+import AdminParent from "../app/admin/parent/table";
+import AdminBus from "../app/admin/bus/table";
+import AdminChildren from "../app/admin/parent/child_table";
+import AdminProfile from "../app/admin/profile";
 
 //admin driver routes
-import AdminDriverCreate from '../app/admin/driver/create'
-
+import AdminDriverCreate from "../app/admin/driver/create";
 
 //driver routes
-import Driver from '../app/driver/index'
-import MapComponent from '../app/driver/map'
-import NewMapComponent from '../app/driver/newMap'
+import Driver from "../app/driver/index";
+import MapComponent from "../app/driver/map";
+import NewMapComponent from "../app/driver/newMap";
 
-import Profile from '../app/driver/profile'
-import Notification from '../app/driver/notifications/index'
-import Unread from '../app/driver/notifications/unread'
-import Read from '../app/driver/notifications/read'
-
+import Profile from "../app/driver/profile";
+import Notification from "../app/driver/notifications/index";
+import Unread from "../app/driver/notifications/unread";
+import Read from "../app/driver/notifications/read";
+// import ScanQrCode from '../app/driver/scanQrCode'
 
 //parent pages
-import Parent from '../app/parent/index'
-import ParentMap from '../app/parent/map'
-import ParentProfile from '../app/parent/profile'
-import ParentNotification from '../app/parent/notifications/index'
-import ParentUnread from '../app/parent/notifications/unread'
-import ParentRead from '../app/parent/notifications/read'
-import ChildProfile from '../app/parent/child_profile'
-
+import Parent from "../app/parent/index";
+import ParentMap from "../app/parent/map";
+import ParentProfile from "../app/parent/profile";
+import ParentNotification from "../app/parent/notifications/index";
+import ParentUnread from "../app/parent/notifications/unread";
+import ParentRead from "../app/parent/notifications/read";
+import ChildProfile from "../app/parent/child_profile";
+import { ElMessage } from "element-plus";
 
 const router = createRouter({
-
-   history: createWebHistory(),
+    history: createWebHistory(),
     linkActiveClass: "active",
     linkExactActiveClass: "exact-active",
 
-    routes : [
+    routes: [
         {
-            name: 'register',
-            path: '/register',
-            component: Register
+            name: "register",
+            path: "/register",
+            component: Register,
         },
         {
-            name: 'login',
-            path: '/login',
-            component: Login
+            name: "login",
+            path: "/login",
+            component: Login,
         },
         {
-            name: 'dashboard',
-            path: '/dashboard',
-            component: Dashboard
-        },
-
-        {
-            name: 'home',
-            path: '/',
-            component: Home
+            name: "home",
+            path: "/",
+            component: Home,
         },
 
         // driver routes
         {
-            path: '/driver',
+            path: "/driver",
             component: Driver,
-            children:[
+            children: [
                 {
-                    path: 'map',
-                    component: MapComponent
+                    path: "map",
+                    component: MapComponent,
                 },
                 {
-                    path: 'newmap',
-                    component: NewMapComponent
+                    path: "newmap",
+                    component: NewMapComponent,
                 },
                 {
-                    path: 'profile',
-                    component: Profile
+                    path: "profile",
+                    component: Profile,
                 },
-        
+
                 {
-                    path: 'notifications',
+                    path: "notifications",
                     component: Notification,
                     children: [
                         {
-                            path: 'all',
-                            component: Read
+                            path: "all",
+                            component: Read,
                         },
 
                         {
-                            path: 'inbox',
-                            component: Unread
+                            path: "inbox",
+                            component: Unread,
                         },
-                    ]
+                    ],
                 },
-            ]
+                // {
+                //     path: 'scanQrCode',
+                //     component: ScanQrCode
+                // }
+            ],
+            // beforeEnter: (to, from, next) => {
+            //     if (localStorage.getItem("token") == null) {
+            //         window.location.href = "/login";
+            //         ElMessage({
+            //             type: "error",
+            //             message: "You are not logged in!!!",
+            //         });
+            //     } else {
+            //         next();
+            //     }
+            // },
         },
 
         //parent routes
         {
-            path: '/parent',
+            path: "/parent",
             component: Parent,
             children: [
                 {
-                    path: 'map',
-                    component: ParentMap
+                    path: "map",
+                    component: ParentMap,
                 },
                 {
-                    path: 'profile',
-                    component: ParentProfile
+                    path: "profile",
+                    component: ParentProfile,
                 },
                 {
-                    path: 'child',
-                    component: ChildProfile
+                    path: "child",
+                    component: ChildProfile,
                 },
-        
+
                 {
-                    path: 'notifications',
+                    path: "notifications",
                     component: ParentNotification,
                     children: [
                         {
-                            path: 'all',
-                            component: ParentRead
+                            path: "all",
+                            component: ParentRead,
                         },
 
                         {
-                            path: 'inbox',
-                            component: ParentUnread
+                            path: "inbox",
+                            component: ParentUnread,
                         },
+                    ],
+                },
             ],
+            // beforeEnter: (to, from, next) => {
+            //     if (localStorage.getItem("token") == null) {
+            //         window.location.href = "/login";
+            //         ElMessage({
+            //             type: "error",
+            //             message: "You are not logged in!!!",
+            //         });
+            //     } else {
+            //         next();
+            //     }
+            // },
         },
-    ]
-},
 
-//admin Routes
-// {
-//     path:'/admin',
-//     component: AdminDriver,
-//     children:[
-//         {
-//             path:'driver',
-//             component: AdminDriver,
-//             children:[
-//                 { 
-//                     path:'create',
-//                     component: AdminDriverCreate,
-//                 },
-//                 {
-
-//                 },
-//                 { 
-
-//                 }
-//             ]
-//         },
-//         {
-//             path:'bus',
-//             component: AdminBus,
-//         },
-//         { 
-//             path: 'parent',
-//             component: AdminParent
-//         }
-//         // {
-//             //     name: 'bus',
-//             //     path: '/buses',
-//             //     component: Bus
-//             // },
-//             // {
-//             //     name: 'drivers',
-//             //     path: '/drivers',
-//             //     component: DriversIndex
-//             // },
-//     ]
-// }
-    ]
-
-
+        // admin Routes
+        {
+            path: "/admin",
+            component: AdminDashboard,
+            children: [
+                {
+                    path: "drivers",
+                    component: AdminDriver,
+                    children: [
+                        {
+                            path: "create",
+                            component: AdminDriverCreate,
+                        },
+                    ],
+                },
+                {
+                    path: "buses",
+                    component: AdminBus,
+                },
+                {
+                    path: "parents",
+                    component: AdminParent,
+                },
+                {
+                    path: "users",
+                    component: Users,
+                },
+                {
+                    path: "children",
+                    component: AdminChildren,
+                },
+                {
+                    path: "profile",
+                    component: AdminProfile,
+                },
+            ],
+            // beforeEnter: (to, from, next) => {
+            //     if (
+            //         localStorage.getItem("admin_token") ||
+            //         localStorage.getItem("driver_token") ||
+            //         localStorage.getItem("parent_token") == null
+            //     ) {
+            //         ElMessage({
+            //             type: "error",
+            //             message: "You are not logged in!!!",
+            //         });
+            //         window.location.href = "/login";
+            //     } else {
+            //         next();
+            //     }
+            // },
+        },
+    ],
 });
 
 export default router;

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Driver;
 
+use App\Events\ChildReached;
 use App\Events\SendLocation;
 use App\Models\Driver;
 use App\Models\Guardian;
@@ -9,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Notifications\DestinationReached;
 use App\Notifications\TripStarted;
+use Database\Seeders\ChildSeeder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\DB;
@@ -211,18 +213,18 @@ class DriverController extends Controller
 
     public function startTrip()
     {
-        $users = User::all();
+        $parents = Guardian::all();
 
         $newTrip = [
         'name' => 'Departure from school!!',
         'body' => 'This is to notify you that the trip has started',
         'thanks' => 'Thank you',
         'tripText' => 'Check out the map to track your child!',
-        'tripUrl' => 'http://localhost:8000/map',
+        'tripUrl' => 'http://localhost:8000/parent/map',
 
     ];
 
-        dd(Notification::send($users, new TripStarted($newTrip)));
+        dd(Notification::send($parents, new TripStarted($newTrip)));
     }
 
     public function showAllNotifications()
@@ -415,18 +417,13 @@ class DriverController extends Controller
     }
 
     public function destinationReached(){
-        // $driver = Driver::where('user_id', auth()->user()->id)->first();
-
         $parents = Guardian::all();
 
         $users = User::all();
 
         $message = 'Your child has arrived to their destination!!';
         
-        // Notification::send($driver, new DestinationReached($message));
         Notification::send($parents, new DestinationReached($message));
-
-        // Notification::sendNow($users, new DestinationReached($message));
 
         return response()->json([
             'success' => true,

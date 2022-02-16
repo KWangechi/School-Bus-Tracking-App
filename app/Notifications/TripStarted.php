@@ -70,7 +70,8 @@ class TripStarted extends Notification
         return [
             'trip_id' => 1,
             'body'=> 'Departure from the school',
-            'action' => 'Track their whereabouts now!!!'
+            'action' => 'Track their whereabouts now!!!',
+            'driver_details' => ''
         ];
 
     }

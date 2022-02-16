@@ -22,11 +22,12 @@
         "sass": "^1.32.11",
         "sass-loader": "^11.0.1",
         "tailwindcss": "^2.2.19",
-        "vue": "^3.2.24",
+        "vue": "^3.2.30",
         "vue-loader": "^16.8.3",
         "vue-template-compiler": "^2.6.12"
     },
     "dependencies": {
+        "@chenfengyuan/vue-qrcode": "^2.0.0",
         "element-plus": "^1.2.0-beta.6",
         "html5-qrcode": "^2.1.6",
         "laravel-echo": "^1.11.3",

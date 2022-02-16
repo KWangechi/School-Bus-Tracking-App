@@ -120,6 +120,8 @@ export default {
         }
 
         console.log("After clearing login: " + login)
+        console.log(this.user)
+        // console.log(localStorage.getItem('token'))
     }
 
 };

@@ -39,6 +39,12 @@
                     >
                         Track their location here
                     </button>
+                    <hr/>
+                    <p>
+                        <button @click="viewDriverDetails">
+                            View driver details
+                        </button>
+                    </p>
                     <hr />
                     <button
                         type="button"
@@ -109,6 +115,10 @@ export default {
         viewMap() {
             window.location.href = "/parent/map";
         },
+
+        async viewDriverDetails(){
+            this.$store.commit('GET_DRIVER_DETAILS')
+        }
     },
     mounted() {
         this.getInbox();

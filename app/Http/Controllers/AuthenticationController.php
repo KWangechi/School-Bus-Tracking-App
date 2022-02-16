@@ -22,22 +22,22 @@ class AuthenticationController extends Controller
             ]);
         } else {
             return response()->json([
-            'success' => true,
-            'message' => 'Users found!!!',
-            'status_code' => Response::HTTP_OK,
-            'data' => $users
-        ]);
+                'success' => true,
+                'message' => 'Users found!!!',
+                'status_code' => Response::HTTP_OK,
+                'data' => $users
+            ]);
         }
     }
 
     public function register(Request $request)
     {
         $user = User::create([
-        'role_id' => $request->role_id,
-        'name' => $request->name,
-        'phone_number' => $request->phone_number,
-        'email'=> $request->email,
-        'password'=> bcrypt($request->password),
+            'role_id' => $request->role_id,
+            'name' => $request->name,
+            'phone_number' => $request->phone_number,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
         ]);
 
         if (!$user) {
@@ -50,7 +50,7 @@ class AuthenticationController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Registration Successful!!',
-                'status_code'=> Response::HTTP_CREATED,
+                'status_code' => Response::HTTP_CREATED,
                 'data' => $user,
                 'access_token' => $user->createToken('personal_token')->plainTextToken
             ]);
@@ -59,41 +59,43 @@ class AuthenticationController extends Controller
 
     public function login(Request $request)
     {
-        if (! Auth::attempt($request->only('email', 'password'))) {
+        // dd([$request->email, $request->password]);
+
+        if (!($request->only('email', 'password'))) {
             return response()->json([
                 'success' => false,
-            'message'=> "Credentials don't exist!!!",
-        'status_code' => Response::HTTP_UNAUTHORIZED,
-                ]);
+                'message' => "Credentials don't exist!!!",
+                'status_code' => Response::HTTP_UNAUTHORIZED,
+            ]);
         }
 
         $user = User::where('email', $request['email'])->firstOrFail();
-        return response()->json([
-                'success' => true,
-                'message' => 'Login Successfull!',
-                'status_code' => Response::HTTP_OK,
-                'data' => $user,
-                'access_token' => $user->createToken('personal_token')->plainTextToken
+        // dd($request->only('email', 'password'));
 
-            ]);
+        return response()->json([
+            'success' => true,
+            'message' => 'Login Successfull!',
+            'status_code' => Response::HTTP_OK,
+            'data' => $user,
+            'access_token' => $user->createToken('personal_token')->plainTextToken
+
+        ]);
     }
 
     public function logout(Request $request)
     {
-        if($request->user()->tokens()->delete()){
+        if ($request->user()->tokens()->delete()) {
             return response()->json([
                 'success' => true,
                 'message' => "Sign out successful!!",
                 'status_code' => Response::HTTP_OK
             ]);
-        }
-        else{
+        } else {
             return response()->json([
                 'success' => false,
                 'message' => "An error occurred. Unable to logout!!",
                 'status_code' => Response::HTTP_METHOD_NOT_ALLOWED
             ]);
         }
-        }
-              
+    }
 }

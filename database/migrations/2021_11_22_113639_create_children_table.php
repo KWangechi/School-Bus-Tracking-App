@@ -15,12 +15,13 @@ class CreateChildrenTable extends Migration
     {
         Schema::create('children', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('parent_id')->unsigned();
+            $table->bigInteger('guardian_id')->unsigned();
             $table->string('name');
+            $table->integer('age');
             $table->string('class');
             $table->timestamps();
 
-            $table->foreign('parent_id')->references('id')->on('parents')->onDelete('cascade');
+            $table->foreign('guardian_id')->references('id')->on('guardians')->onDelete('cascade');
         });
     }
 

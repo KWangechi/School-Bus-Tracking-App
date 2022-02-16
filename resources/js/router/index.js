@@ -19,13 +19,14 @@ import AdminDriverCreate from "../app/admin/driver/create";
 //driver routes
 import Driver from "../app/driver/index";
 import MapComponent from "../app/driver/map";
-import NewMapComponent from "../app/driver/newMap";
+// import NewMapComponent from "../app/driver/newMap";
 
 import Profile from "../app/driver/profile";
 import Notification from "../app/driver/notifications/index";
 import Unread from "../app/driver/notifications/unread";
 import Read from "../app/driver/notifications/read";
-// import ScanQrCode from '../app/driver/scanQrCode'
+import ScanQrCode from '../app/driver/scanQrCode'
+import GenerateQrCode from '../app/driver/generateQrCode'
 
 //parent pages
 import Parent from "../app/parent/index";
@@ -69,10 +70,6 @@ const router = createRouter({
                     component: MapComponent,
                 },
                 {
-                    path: "newmap",
-                    component: NewMapComponent,
-                },
-                {
                     path: "profile",
                     component: Profile,
                 },
@@ -92,22 +89,26 @@ const router = createRouter({
                         },
                     ],
                 },
-                // {
-                //     path: 'scanQrCode',
-                //     component: ScanQrCode
-                // }
+                {
+                    path: 'scanQrCode',
+                    component: ScanQrCode
+                },
+                {
+                    path: 'generateQrCode',
+                    component: GenerateQrCode
+                }
             ],
-            // beforeEnter: (to, from, next) => {
-            //     if (localStorage.getItem("token") == null) {
-            //         window.location.href = "/login";
-            //         ElMessage({
-            //             type: "error",
-            //             message: "You are not logged in!!!",
-            //         });
-            //     } else {
-            //         next();
-            //     }
-            // },
+            beforeEnter: (to, from, next) => {
+                if (localStorage.getItem("token") == null) {
+                    window.location.href = "/login";
+                    ElMessage({
+                        type: "error",
+                        message: "You are not logged in!!!",
+                    });
+                } else {
+                    next();
+                }
+            },
         },
 
         //parent routes
@@ -144,17 +145,17 @@ const router = createRouter({
                     ],
                 },
             ],
-            // beforeEnter: (to, from, next) => {
-            //     if (localStorage.getItem("token") == null) {
-            //         window.location.href = "/login";
-            //         ElMessage({
-            //             type: "error",
-            //             message: "You are not logged in!!!",
-            //         });
-            //     } else {
-            //         next();
-            //     }
-            // },
+            beforeEnter: (to, from, next) => {
+                if (localStorage.getItem("token") == null) {
+                    window.location.href = "/login";
+                    ElMessage({
+                        type: "error",
+                        message: "You are not logged in!!!",
+                    });
+                } else {
+                    next();
+                }
+            },
         },
 
         // admin Routes
@@ -193,21 +194,18 @@ const router = createRouter({
                     component: AdminProfile,
                 },
             ],
-            // beforeEnter: (to, from, next) => {
-            //     if (
-            //         localStorage.getItem("admin_token") ||
-            //         localStorage.getItem("driver_token") ||
-            //         localStorage.getItem("parent_token") == null
-            //     ) {
-            //         ElMessage({
-            //             type: "error",
-            //             message: "You are not logged in!!!",
-            //         });
-            //         window.location.href = "/login";
-            //     } else {
-            //         next();
-            //     }
-            // },
+            beforeEnter: (to, from, next) => {
+                if (
+                    localStorage.getItem("token") == null) {
+                    ElMessage({
+                        type: "error",
+                        message: "You are not logged in!!!",
+                    });
+                    window.location.href = "/login";
+                } else {
+                    next();
+                }
+            },
         },
     ],
 });

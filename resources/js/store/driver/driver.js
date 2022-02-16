@@ -177,7 +177,7 @@ const mutations = {
             .catch((errors) => {
                 // console.log(errors);
                 ElMessage({
-                    type: "success",
+                    type: "error",
                     message: "Error sending notification!!"
                 })
                 console.log("Notification has not been sent!!")

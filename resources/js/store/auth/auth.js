@@ -4,9 +4,9 @@ const state = {
     // isLoggedIn: false,
     user: {},
     errorMessage: null,
-    driverToken: null,
-    adminToken: null,
-    parentToken: null,
+    // driverToken: null,
+    // adminToken: null,
+    // parentToken: null,
 };
 
 const getters = {
@@ -20,29 +20,36 @@ const mutations = {
         axios
             .post("/api/login", user)
             .then((response) => {
-                localStorage.setItem("token", response.data.access_token);
-                localStorage.setItem("isLoggedIn", true);
 
-                state.user = response.data.data;
+                //response must be a success
+                if(response.data.success){
+                    localStorage.setItem("token", response.data.access_token);
+                    localStorage.setItem("isLoggedIn", true);
+                    ElMessage({
+                        type: 'success',
+                        message: 'Successfully logged in'
+                    })
 
-                if (response.data.success && response.data.data.role_id == 1) {
-                    window.location.href = "/admin";
-                } else if (
-                    response.data.success &&
-                    response.data.data.role_id == 2
-                ) {
-                    window.location.href = "/driver";
-                } else if (
-                    response.data.success &&
-                    response.data.data.role_id == 3
-                ) {
-                    window.location.href = "/parent";
-                } else {
-                    state.errorMessage = response.data.message;
+                    state.user = response.data.data;
+
+
+                    if (response.data.data.role_id == 1) {
+                        window.location.href = "/admin";
+                    } else if (response.data.data.role_id == 2
+                    ) {
+                        window.location.href = "/driver";
+                    } else {
+                        window.location.href = "/parent";
+                    }
+
+                    axios.defaults.headers.common["Authorization"] =
+                        "Bearer " + response.data.access_token;
                 }
 
-                axios.defaults.headers.common["Authorization"] =
-                    "Bearer " + response.data.access_token;
+                else{
+                    state.errorMessage = response.data.message;
+                    localStorage.clear();
+                }
             })
             .catch(function (error) {
                 console.error(error);

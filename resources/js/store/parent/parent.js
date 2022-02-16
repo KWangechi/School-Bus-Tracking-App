@@ -10,6 +10,7 @@ const state = {
     message: null,
     my_children: {},
     driverLocation: "",
+    driverDetails: "",
 };
 
 const getters = {
@@ -18,7 +19,8 @@ const getters = {
     notifications: (state) => state.notifications,
     message: (state) => state.message,
     my_children: (state) => state.my_children,
-    driverLocation: state => state.driverLocation
+    driverLocation: (state) => state.driverLocation,
+    driverDetails: (state) => state.driverDetails,
 };
 
 const mutations = {
@@ -182,7 +184,6 @@ const mutations = {
         });
     },
 
-
     GET_CHILD(state) {
         axios.defaults.headers.common["Authorization"] =
             "Bearer " + localStorage.getItem("token");
@@ -190,13 +191,18 @@ const mutations = {
         axios.get("/api/parent/child").then((response) => {
             console.log(response);
 
-            if(response.data.success){
-                state.my_children = response.data.data
+            if (response.data.success) {
+                state.my_children = response.data.data;
+            } else {
+                state.message = response.data.message;
             }
-            else{
-                state.message = response.data.message
-            }
+        });
+    },
 
+    GET_DRIVER_DETAILS(state) {
+        axios.get("/api/parent/getDriver").then((response) => {
+            console.log(response);
+            // state.driver = response.data.data
         });
     },
 };

@@ -1,20 +1,20 @@
 <?php
 
-namespace App\Http\Controllers\Driver;
+namespace App\Http\Controllers\Driver;;
 
-use App\Events\ChildReached;
 use App\Events\SendLocation;
 use App\Models\Driver;
 use App\Models\Guardian;
 use App\Http\Controllers\Controller;
+use App\Models\Bus;
 use App\Models\User;
 use App\Notifications\DestinationReached;
 use App\Notifications\TripStarted;
-use Database\Seeders\ChildSeeder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
+// use Illuminate\Http\Response;
+
 
 class DriverController extends Controller
 {
@@ -38,7 +38,7 @@ class DriverController extends Controller
                 'success' => false,
                 'message' => "You are not authorized to see this page!!",
                 'status_code' => Response::HTTP_FORBIDDEN,
-               
+
             ]);
         }
     }
@@ -84,12 +84,12 @@ class DriverController extends Controller
                 ]);
             }
         }
-        
+
         return response()->json([
-                'success' => false,
-                'message' => "You are not authorised to register as a driver!!!",
-                'status_code' => Response::HTTP_FORBIDDEN,
-            ]);
+            'success' => false,
+            'message' => "You are not authorised to register as a driver!!!",
+            'status_code' => Response::HTTP_FORBIDDEN,
+        ]);
     }
 
     /**
@@ -101,7 +101,7 @@ class DriverController extends Controller
     // public function show($id)
     // {
     //     $driver = auth()->user()->drivers->find($id);
-        
+
     //     if (!$driver) {
     //         return response()->json([
     //             'success' => false,
@@ -148,30 +148,30 @@ class DriverController extends Controller
     public function update(Request $request, $id)
     {
         $driver = Driver::where('user_id', auth()->user()->id)->find($id);
-        
+
         if (!$driver) {
             return response()->json([
-                    'success' => true,
-                    'message' => "Driver details not found",
-                    'status_code' => Response::HTTP_OK,
-                    'data' => $driver
-                ]);
+                'success' => true,
+                'message' => "Driver details not found",
+                'status_code' => Response::HTTP_OK,
+                'data' => $driver
+            ]);
         } else {
             if ($driver->user->role_id == User::role_driver) {
                 $driver->update($request->all());
                 return response()->json([
-                        'success' => true,
-                        'message' => "Driver details updated successfully!!",
-                        'status_code' => Response::HTTP_OK,
-                        'data' => $driver,
-                    ]);
+                    'success' => true,
+                    'message' => "Driver details updated successfully!!",
+                    'status_code' => Response::HTTP_OK,
+                    'data' => $driver,
+                ]);
             } else {
                 return response()->json([
-                        'success' => false,
-                        'message' => "Update not successful. Please try again!!",
-                        'status_code' => Response::HTTP_OK,
-                        'data' => [],
-                    ]);
+                    'success' => false,
+                    'message' => "Update not successful. Please try again!!",
+                    'status_code' => Response::HTTP_OK,
+                    'data' => [],
+                ]);
             }
         }
     }
@@ -199,7 +199,7 @@ class DriverController extends Controller
                     'success' => true,
                     'message' => "Driver details deleted successfully!!",
                     'status_code' => Response::HTTP_OK,
-                    
+
                 ]);
             } else {
                 return response()->json([
@@ -216,15 +216,45 @@ class DriverController extends Controller
         $parents = Guardian::all();
 
         $newTrip = [
-        'name' => 'Departure from school!!',
-        'body' => 'This is to notify you that the trip has started',
-        'thanks' => 'Thank you',
-        'tripText' => 'Check out the map to track your child!',
-        'tripUrl' => 'http://localhost:8000/parent/map',
+            'name' => 'Departure from school!!',
+            'body' => 'This is to notify you that the trip has started',
+            'thanks' => 'Thank you',
+            'tripText' => 'Check out the map to track your child!',
+            'tripUrl' => 'http://localhost:8000/parent/map',
+            'driver_details' => 'http://localhost::8080/parent/getDriver'
+        ];
 
-    ];
+
 
         dd(Notification::send($parents, new TripStarted($newTrip)));
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Notification sent successfully!!!',
+            'status_code' => Response::HTTP_OK,
+            'data' => $newTrip
+        ]);
+    }
+
+    public function getDriver()
+    {
+        //send also driver details
+        $driver = Driver::where('user_id', auth()->user()->id)->first();
+        $bus = Bus::where('driver_id', auth()->user()->id)->first();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Driver details found',
+            'status_code' => Response::HTTP_OK,
+            'data' => [
+                $driver->user->name,
+                $driver->age,
+                $driver->user->email,
+                $driver->user->phone_number,
+                $bus->number_plate,
+                $bus->designated_route
+            ]
+        ]);
     }
 
     public function showAllNotifications()
@@ -235,17 +265,17 @@ class DriverController extends Controller
 
         if (!$notifications) {
             return response()->json([
-            'success' => false,
-            'message' => "You currently don't have notifications",
-            'status_code' => Response::HTTP_NOT_FOUND
-        ]);
+                'success' => false,
+                'message' => "You currently don't have notifications",
+                'status_code' => Response::HTTP_NOT_FOUND
+            ]);
         } else {
             return response()->json([
-            'success' => true,
-            'message' => "Notifications found!!!",
-            'status_code' => Response::HTTP_OK,
-            'data' => $notifications
-        ]);
+                'success' => true,
+                'message' => "Notifications found!!!",
+                'status_code' => Response::HTTP_OK,
+                'data' => $notifications
+            ]);
         }
     }
 
@@ -259,14 +289,15 @@ class DriverController extends Controller
 
 
         return response()->json([
-        'success' => true,
-        'message' => 'Notification has been marked as read',
-        'status_code' => Response::HTTP_OK,
+            'success' => true,
+            'message' => 'Notification has been marked as read',
+            'status_code' => Response::HTTP_OK,
 
-    ]);
+        ]);
     }
 
-    public function markAllNotifications(Request $request){
+    public function markAllNotifications(Request $request)
+    {
         $driver = Driver::where('user_id', auth()->user()->id)->first();
 
         $driver->user->unreadNotifications->when($request->input('id'), function ($query) use ($request) {
@@ -275,11 +306,11 @@ class DriverController extends Controller
 
 
         return response()->json([
-        'success' => true,
-        'message' => 'Inbox has been marked as read',
-        'status_code' => Response::HTTP_OK,
+            'success' => true,
+            'message' => 'Inbox has been marked as read',
+            'status_code' => Response::HTTP_OK,
 
-    ]);
+        ]);
     }
 
     public function showUnreadNotifications()
@@ -290,17 +321,17 @@ class DriverController extends Controller
 
         if (!$notifications) {
             return response()->json([
-            'success' => false,
-            'message' => "You currently don't have notifications",
-            'status_code' => Response::HTTP_NOT_FOUND
-        ]);
+                'success' => false,
+                'message' => "You currently don't have notifications",
+                'status_code' => Response::HTTP_NOT_FOUND
+            ]);
         } else {
             return response()->json([
-            'success' => true,
-            'message' => "Notifications found!!!",
-            'status_code' => Response::HTTP_OK,
-            'data' => $notifications,
-        ]);
+                'success' => true,
+                'message' => "Notifications found!!!",
+                'status_code' => Response::HTTP_OK,
+                'data' => $notifications,
+            ]);
         }
     }
 
@@ -313,18 +344,18 @@ class DriverController extends Controller
         // dd($notifications);
         if ($notifications->each->delete()) {
             return response()->json([
-        'success' => true,
-        'message' => 'Notification deleted successfully!!!',
-        'status_code' => Response::HTTP_OK,
+                'success' => true,
+                'message' => 'Notification deleted successfully!!!',
+                'status_code' => Response::HTTP_OK,
 
-    ]);
+            ]);
         } else {
             return response()->json([
-        'success' => false,
-        'message' => 'Something went wrong. Please try again!',
-        'status_code' => Response::HTTP_INTERNAL_SERVER_ERROR
+                'success' => false,
+                'message' => 'Something went wrong. Please try again!',
+                'status_code' => Response::HTTP_INTERNAL_SERVER_ERROR
 
-    ]);
+            ]);
         }
     }
 
@@ -336,20 +367,20 @@ class DriverController extends Controller
 
         // dd($notification);
         if ($notification->delete()) {
-                    return response()->json([
+            return response()->json([
                 'success' => true,
                 'message' => 'Notification deleted successfully!!!',
                 'status_code' => Response::HTTP_OK,
-        
+
             ]);
-                } else {
-                    return response()->json([
+        } else {
+            return response()->json([
                 'success' => false,
                 'message' => 'Something went wrong. Please try again!',
                 'status_code' => Response::HTTP_INTERNAL_SERVER_ERROR
-        
+
             ]);
-                }
+        }
     }
 
     public function deleteInbox()
@@ -360,18 +391,18 @@ class DriverController extends Controller
 
         if ($inbox->each->delete()) {
             return response()->json([
-        'success' => true,
-        'message' => 'Notification deleted successfully!!!',
-        'status_code' => Response::HTTP_OK,
+                'success' => true,
+                'message' => 'Notification deleted successfully!!!',
+                'status_code' => Response::HTTP_OK,
 
-    ]);
+            ]);
         } else {
             return response()->json([
-        'success' => false,
-        'message' => 'Something went wrong. Please try again!',
-        'status_code' => Response::HTTP_INTERNAL_SERVER_ERROR
+                'success' => false,
+                'message' => 'Something went wrong. Please try again!',
+                'status_code' => Response::HTTP_INTERNAL_SERVER_ERROR
 
-    ]);
+            ]);
         }
     }
 
@@ -379,50 +410,51 @@ class DriverController extends Controller
     {
         $lat = $request->input('lat');
         $long = $request->input('long');
-        $location = ["lat"=>$lat, "long"=>$long];
+        $location = ["lat" => $lat, "long" => $long];
 
         event(new SendLocation($location));
-        
+
         return response()->json([
-            'success'=>true,
+            'success' => true,
             'message' => 'Location received!',
             'status_code' => Response::HTTP_OK,
-            'data'=>$location
+            'data' => $location
         ]);
     }
 
-    public function getAddresses(){
-        $addresses = 'ojo';
+    // public function getAddresses(){
+    //     $addresses = 'ojo';
 
-        if(!$addresses){
-            return response()->json([
-                'success' => false,
-                'message' => 'Addresses not found!',
-                'status_code' => Response::HTTP_NOT_FOUND,
-                'data' => []
+    //     if(!$addresses){
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Addresses not found!',
+    //             'status_code' => Response::HTTP_NOT_FOUND,
+    //             'data' => []
 
-            ]);
-        }
+    //         ]);
+    //     }
 
-        else{
-            return response()->json([
-                'success' => true,
-                'message' => 'Addresses found!',
-                'status_code' => Response::HTTP_OK,
-                'data' => $addresses
+    //     else{
+    //         return response()->json([
+    //             'success' => true,
+    //             'message' => 'Addresses found!',
+    //             'status_code' => Response::HTTP_OK,
+    //             'data' => $addresses
 
-            ]);
-        }
+    //         ]);
+    //     }
 
-    }
+    // }
 
-    public function destinationReached(){
+    public function destinationReached()
+    {
         $parents = Guardian::all();
 
         $users = User::all();
 
         $message = 'Your child has arrived to their destination!!';
-        
+
         Notification::send($parents, new DestinationReached($message));
 
         return response()->json([

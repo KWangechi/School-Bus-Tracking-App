@@ -10,7 +10,8 @@ class Guardian extends Model
 {
     use HasFactory, Notifiable;
 
-    protected $table = "parents";
+    protected $table = "guardians";
+
     protected $fillable = [
     'user_id',
     'home_address',
@@ -27,4 +28,5 @@ class Guardian extends Model
     {
         return $this->hasMany(Child::class);
     }
+
 }

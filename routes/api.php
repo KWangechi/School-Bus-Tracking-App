@@ -86,7 +86,8 @@ Route::group(['middleware' =>['auth:sanctum']], function () {
         Route::delete('/deleteNotification/{id}', [App\Http\Controllers\Driver\DriverController::class, 'deleteNotification']);
         Route::post('/deleteAllNotifications', [App\Http\Controllers\Driver\DriverController::class, 'deleteAllNotification']);
         Route::post('/deleteInbox', [App\Http\Controllers\Driver\DriverController::class, 'deleteInbox']);
-
+        Route::post('/createCode', [App\Http\Controllers\Driver\QrCodeGeneratorController::class, 'createCode']);
+        
         //sending the  coordinates to the parents
         // Route::post('/map', [App\Http\Controllers\Driver\DriverController::class, 'sendLocation']);
         Route::post('/destinationReached', [App\Http\Controllers\Driver\DriverController::class, 'destinationReached']); 
@@ -102,6 +103,7 @@ Route::group(['middleware' =>['auth:sanctum']], function () {
         Route::post('/markAllNotifications', [App\Http\Controllers\Parent\ParentController::class, 'markAllNotifications']);
 
         Route::get('/child', [App\Http\Controllers\Parent\ParentController::class, 'getChildren']);
+        Route::get('/getDriver', [App\Http\Controllers\Driver\DriverController::class, 'getDriver']);
 
     });
 

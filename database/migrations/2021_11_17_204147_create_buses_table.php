@@ -16,9 +16,9 @@ class CreateBusesTable extends Migration
         Schema::create('buses', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('driver_id')->unsigned();
-            $table->string('number_plate');
-            $table->date('date_registered');
-            $table->string('designated_route');
+            $table->string('number_plate')->nullable();
+            $table->date('date_registered')->nullable();
+            $table->string('designated_route')->nullable();
             $table->timestamps();
             
             $table->foreign('driver_id')->references('id')->on('drivers')->onDelete('cascade');
